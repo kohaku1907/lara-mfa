@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Database\Factories;
+namespace Kohaku1907\LaraMfa\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
