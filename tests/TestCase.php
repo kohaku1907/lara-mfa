@@ -3,8 +3,8 @@
 namespace Kohaku1907\LaraMfa\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use Kohaku1907\LaraMfa\LaraMfaServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {

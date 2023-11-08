@@ -19,18 +19,16 @@ trait SerializesSharedSecret
 {
     /**
      * Returns the Shared Secret as a URI.
-     *
-     * @return string
      */
     public function toUri(): string
     {
         $issuer = config('app.name');
         $query = http_build_query([
-            'issuer'    => $issuer,
-            'label'     => $this->attributes['label'],
-            'secret'    => $this->shared_secret,
+            'issuer' => $issuer,
+            'label' => $this->attributes['label'],
+            'secret' => $this->shared_secret,
             'algorithm' => strtoupper($this->attributes['algorithm']),
-            'digits'     => $this->attributes['digits'],
+            'digits' => $this->attributes['digits'],
         ], '', '&', PHP_QUERY_RFC3986);
 
         return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$this->attributes['label']."?$query";
@@ -38,8 +36,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the Shared Secret as a QR Code in SVG format.
-     *
-     * @return string
      */
     public function toQr(): string
     {
@@ -52,8 +48,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the current object instance as a string representation.
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -62,8 +56,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the Shared Secret as a string.
-     *
-     * @return string
      */
     public function toString(): string
     {
@@ -72,8 +64,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the Shared Secret as a string of 4-character groups.
-     *
-     * @return string
      */
     public function toGroupedString(): string
     {
@@ -81,7 +71,7 @@ trait SerializesSharedSecret
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function render(): string
     {

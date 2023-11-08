@@ -1,6 +1,7 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Concerns\Authenticators;
+
 use Kohaku1907\LaraMfa\Enums\Channel;
 
 class EmailAuthenticator extends MFAuthenticator

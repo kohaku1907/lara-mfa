@@ -44,4 +44,3 @@ class CreateMultiFactorAuthenticationsTable extends Migration
         Schema::dropIfExists('multi_factor_authentications');
     }
 }
-

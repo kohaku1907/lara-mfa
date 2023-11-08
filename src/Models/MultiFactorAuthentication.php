@@ -13,7 +13,6 @@ use Kohaku1907\LaraMfa\Models\Strategies\TotpAuthentication;
 
 class MultiFactorAuthentication extends Model
 {
-    
     use HasFactory;
 
     protected $table = 'multi_factor_authentications';
@@ -21,21 +20,18 @@ class MultiFactorAuthentication extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'channel'                     => Channel::class,
-        'shared_secret'               => 'encrypted',
-        'digits'                      => 'int',
-        'seconds'                     => 'int',
-        'window'                      => 'int',
-        'recovery_codes'              => 'encrypted:collection',
-        'safe_devices'                => 'collection',
-        'enabled_at'                  => 'datetime',
+        'channel' => Channel::class,
+        'shared_secret' => 'encrypted',
+        'digits' => 'int',
+        'seconds' => 'int',
+        'window' => 'int',
+        'recovery_codes' => 'encrypted:collection',
+        'safe_devices' => 'collection',
+        'enabled_at' => 'datetime',
     ];
 
-
-     /**
+    /**
      * The model that uses 2Step Authentication.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function authenticatable(): MorphTo
     {
@@ -44,8 +40,6 @@ class MultiFactorAuthentication extends Model
 
     /**
      * Get the authentication strategy for this MFA instance.
-     *
-     * @return \Kohaku1907\LaraMfa\Models\Strategies\AuthenticationStrategy
      */
     public function getAuthenticationStrategy(): AuthenticationStrategy
     {
@@ -63,9 +57,6 @@ class MultiFactorAuthentication extends Model
 
     /**
      * Verify the given code against the current authentication strategy.
-     *
-     * @param string $code
-     * @return bool
      */
     public function verifyCode(string $code): bool
     {
@@ -74,8 +65,6 @@ class MultiFactorAuthentication extends Model
 
     /**
      * Generate a new code for the current authentication strategy.
-     *
-     * @return string
      */
     public function generateCode(): string
     {
@@ -84,8 +73,6 @@ class MultiFactorAuthentication extends Model
 
     /**
      * Send a new code using the current authentication strategy.
-     *
-     * @return void
      */
     public function sendCode(): void
     {

@@ -8,7 +8,6 @@ use Kohaku1907\LaraMfa\Concerns\Authenticators\EmailAuthenticator;
 use Kohaku1907\LaraMfa\Concerns\Authenticators\MFAuthenticator;
 use Kohaku1907\LaraMfa\Concerns\Authenticators\SmsAuthenticator;
 use Kohaku1907\LaraMfa\Concerns\Authenticators\TotpAuthenticator;
-use Kohaku1907\LaraMfa\Enums\Channel;
 
 trait HasMultiFactorAuthentication
 {
@@ -46,5 +45,4 @@ trait HasMultiFactorAuthentication
             throw new \Exception('Invalid verification code');
         }
     }
-    
 }

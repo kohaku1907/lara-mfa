@@ -1,8 +1,8 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Models\Strategies;
-use App\Models\MultiFactorAuthentication;
 
+use App\Models\MultiFactorAuthentication;
 
 class SmsAuthentication implements AuthenticationStrategy
 {

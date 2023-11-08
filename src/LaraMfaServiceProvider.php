@@ -4,7 +4,6 @@ namespace Kohaku1907\LaraMfa;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Kohaku1907\LaraMfa\Commands\LaraMfaCommand;
 
 class LaraMfaServiceProvider extends PackageServiceProvider
 {
