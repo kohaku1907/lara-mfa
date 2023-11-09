@@ -15,16 +15,14 @@ class SmsAuthentication implements AuthenticationStrategy
 
     public function verifyCode(string $code): bool
     {
-        // Implement verification logic here
+        $storedCode = $this->mfa->getCode();
+
+        return $storedCode === $code;
     }
 
     public function generateCode(): string
     {
-        // Implement code generation logic here
-    }
-
-    public function sendCode(): void
-    {
-        // Implement SMS sending logic here
+        $code = random_int(100000, 999999);
+        return strval($code);
     }
 }

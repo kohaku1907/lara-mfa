@@ -15,16 +15,19 @@ class EmailAuthentication implements AuthenticationStrategy
 
     public function verifyCode(string $code): bool
     {
-        // Implement verification logic here
+        $storedCode = $this->mfa->getCode();
+
+        return $storedCode === $code;
     }
 
     public function generateCode(): string
     {
-        // Implement code generation logic here
-    }
-
-    public function sendCode(): void
-    {
-        // Implement email sending logic here
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $code = '';
+        $length = 6;
+        for ($i = 0; $i < $length; $i++) {
+            $code .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $code;
     }
 }

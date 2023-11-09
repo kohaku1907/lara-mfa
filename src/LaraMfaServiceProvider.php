@@ -9,14 +9,16 @@ class LaraMfaServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('lara-mfa')
-            ->hasConfigFile()
+            ->hasConfigFile('mfa')
             ->hasMigration('create_lara-mfa_table');
+    }
+
+    public function bootingPackage(): void
+    {
+        $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('mfa', Http\Middleware\VerifyMultiFactor::class);
+        $router->aliasMiddleware('mfa.force', Http\Middleware\ForceVerifyMultiFactor::class);
     }
 }

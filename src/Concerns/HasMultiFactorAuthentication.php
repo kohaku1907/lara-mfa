@@ -8,6 +8,7 @@ use Kohaku1907\LaraMfa\Concerns\Authenticators\EmailAuthenticator;
 use Kohaku1907\LaraMfa\Concerns\Authenticators\MFAuthenticator;
 use Kohaku1907\LaraMfa\Concerns\Authenticators\SmsAuthenticator;
 use Kohaku1907\LaraMfa\Concerns\Authenticators\TotpAuthenticator;
+use Kohaku1907\LaraMfa\Enums\Channel;
 
 trait HasMultiFactorAuthentication
 {
@@ -39,10 +40,21 @@ trait HasMultiFactorAuthentication
                 [
                     'channel' => $authenticator->getChannel(),
                     'enabled_at' => now(),
+                    'secret' => method_exists($authenticator, 'getSecret') ? $authenticator->getSecret() : null,
+                    'digits' => method_exists($authenticator, 'getDigits') ? $authenticator->getDigits() : null,
                 ]
             );
         } else {
             throw new \Exception('Invalid verification code');
         }
+    }
+
+    
+
+    public function hasMultiFactorEnabled(Channel $channel): bool
+    {
+        $enabledAt = $this->multiFactors()->where('channel', $channel)->value('enabled_at');
+
+        return $enabledAt !== null;
     }
 }
