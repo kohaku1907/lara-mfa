@@ -17,7 +17,7 @@ class CreateMultiFactorAuthenticationsTable extends Migration
             $table->id();
             $table->morphs('authenticatable', 'mfa_auth_type_auth_id_index');
             $table->string('channel'); // 'sms', 'email', 'totp'
-            $table->text('shared_secret')->nullable(); // For TOTP
+            $table->text('secret')->nullable(); // For TOTP
             $table->text('recovery_codes')->nullable(); // For TOTP
             $table->timestampTz('enabled_at')->nullable();
             $table->unsignedTinyInteger('digits')->default(6); // For TOTP

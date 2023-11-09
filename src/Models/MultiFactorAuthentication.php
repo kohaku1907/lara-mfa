@@ -23,7 +23,7 @@ class MultiFactorAuthentication extends Model
 
     protected $casts = [
         'channel' => Channel::class,
-        'shared_secret' => 'encrypted',
+        'secret' => 'encrypted',
         'digits' => 'int',
         'seconds' => 'int',
         'window' => 'int',
