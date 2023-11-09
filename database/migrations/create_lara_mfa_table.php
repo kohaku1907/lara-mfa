@@ -20,10 +20,6 @@ class CreateMultiFactorAuthenticationsTable extends Migration
             $table->text('secret')->nullable(); // For TOTP
             $table->text('recovery_codes')->nullable(); // For TOTP
             $table->timestampTz('enabled_at')->nullable();
-            $table->unsignedTinyInteger('digits')->default(6); // For TOTP
-            $table->unsignedTinyInteger('seconds')->default(30); // For TOTP
-            $table->unsignedTinyInteger('window')->default(0); // For TOTP
-            $table->string('algorithm', 16)->default('sha1');
             $table->unsignedTinyInteger('max_attempts')->default(5); // For SMS and email
             $table->timestampTz('last_attempt_at')->nullable(); // For SMS and email
             $table->unsignedTinyInteger('attempts')->default(0); // For SMS and email

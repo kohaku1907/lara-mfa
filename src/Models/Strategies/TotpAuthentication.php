@@ -2,11 +2,15 @@
 
 namespace Kohaku1907\LaraMfa\Models\Strategies;
 
-use App\Models\MultiFactorAuthentication;
+use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
 class TotpAuthentication implements AuthenticationStrategy
 {
     private MultiFactorAuthentication $mfa;
+
+    private $seconds = 30;
+
+    private $digits = 6;
 
     public function __construct(MultiFactorAuthentication $mfa)
     {
@@ -14,15 +18,17 @@ class TotpAuthentication implements AuthenticationStrategy
     }
 
     public function verifyCode(string $code): bool
-    {
-        // Generate a hash value from the secret key
-        $hash = hash_hmac('sha1', $this->mfa->secret, true);
+    {   
+        $offset = config('mfa.totp.offset');
 
-        // Convert the hash value to an OTP
-        $otp = str_pad((int) base_convert($hash, 16, 10) % 1000000, 6, '0', STR_PAD_LEFT);
-
-        // Compare the OTP with the provided code
-        return $otp === $code;
+        for ($i = 0; $i <= $offset; $i++) {
+            $time = time() - ($i * $this->seconds);
+            $generatedCode = $this->generateCodeFromTime($time);
+            if (hash_equals($generatedCode, $code)) {
+                return true;
+            }   
+        }
+        return false;
     }
 
     /**
@@ -32,8 +38,13 @@ class TotpAuthentication implements AuthenticationStrategy
      */
     public function generateCode(): string
     {
+        return $this->generateCodeFromTime();
+    }
+
+    protected function generateCodeFromTime(int $at = time()): string
+    {
         $secret = $this->mfa->secret;
-        $time = floor(time() / 30); // TOTP time step is 30 seconds
+        $time = floor($at / $this->seconds); // TOTP time step is 30 seconds
         $binaryTime = pack('N*', 0).pack('N*', $time); // Convert timestamp to binary
         $hash = hash_hmac('sha1', $binaryTime, $secret, true); // Calculate HMAC-SHA1 hash
         $offset = ord(substr($hash, -1)) & 0x0F; // Calculate offset
@@ -42,8 +53,8 @@ class TotpAuthentication implements AuthenticationStrategy
             (ord(substr($hash, $offset + 1)) & 0xFF) << 16 |
             (ord(substr($hash, $offset + 2)) & 0xFF) << 8 |
             (ord(substr($hash, $offset + 3)) & 0xFF)
-        ) % pow(10, $this->mfa->digits); // Calculate code
+        ) % pow(10, $this->digits); // Calculate code
 
-        return str_pad($code, $this->mfa->digits, '0', STR_PAD_LEFT); // Pad code with leading zeros
+        return str_pad($code, $this->digits, '0', STR_PAD_LEFT); // Pad code with leading zeros
     }
 }

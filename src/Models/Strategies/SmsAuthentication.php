@@ -2,7 +2,7 @@
 
 namespace Kohaku1907\LaraMfa\Models\Strategies;
 
-use App\Models\MultiFactorAuthentication;
+use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
 class SmsAuthentication implements AuthenticationStrategy
 {

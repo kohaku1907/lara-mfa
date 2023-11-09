@@ -14,5 +14,13 @@ return [
     ],
     'totp' => [
         'expire_time' => 1440, // in minutes
+        'secret_length' => 20,
+        'offset' => 1, // in seconds
+        'label' => 'LaraMFA',
+        'issuer' => 'LaraMFA',
+        'qr_code' => [
+            'size' => 400,
+            'margin' => 2,
+        ],
     ],
 ];

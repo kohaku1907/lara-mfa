@@ -1,21 +1,25 @@
 <?php
 
-namespace App\Models;
+namespace Kohaku1907\LaraMfa\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Kohaku1907\LaraMfa\Contracts\TotpFactor;
 use Kohaku1907\LaraMfa\Enums\Channel;
+use Kohaku1907\LaraMfa\Models\Concerns\TOTP\SerializesSecret;
 use Kohaku1907\LaraMfa\Models\Strategies\AuthenticationStrategy;
 use Kohaku1907\LaraMfa\Models\Strategies\EmailAuthentication;
 use Kohaku1907\LaraMfa\Models\Strategies\SmsAuthentication;
 use Kohaku1907\LaraMfa\Models\Strategies\TotpAuthentication;
+use ParagonIE\ConstantTime\Base32;
 
-class MultiFactorAuthentication extends Model
+class MultiFactorAuthentication extends Model implements TotpFactor
 {
     use HasFactory;
+    use SerializesSecret;
 
     protected $table = 'multi_factor_authentications';
 
@@ -24,8 +28,6 @@ class MultiFactorAuthentication extends Model
     protected $casts = [
         'channel' => Channel::class,
         'secret' => 'encrypted',
-        'digits' => 'int',
-        'seconds' => 'int',
         'window' => 'int',
         'recovery_codes' => 'encrypted:collection',
         'safe_devices' => 'collection',
@@ -62,6 +64,10 @@ class MultiFactorAuthentication extends Model
      */
     public function generateCode(): string
     {
+        if($this->channel === Channel::Totp) {
+            return $this->getAuthenticationStrategy()->generateCode();
+        }
+
         $strategy = $this->getAuthenticationStrategy();
         $cacheKey = $this->getCacheKey();
         $cacheDuration = $this->getCacheDuration();
@@ -128,5 +134,17 @@ class MultiFactorAuthentication extends Model
         $defaultConfigKey = 'mfa.default_code_timeout';
 
         return Config::get($channelConfigKey, Config::get($defaultConfigKey));
+    }
+
+    /**
+     * Creates a new Random Secret.
+     *
+     * @return string
+     */
+    public static function generateRandomSecret(): string
+    {
+        return Base32::encodeUpper(
+            random_bytes(config('mfa.totp.secret_length'))
+        );
     }
 }

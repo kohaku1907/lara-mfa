@@ -15,20 +15,21 @@ use function rawurlencode;
 use function strtoupper;
 use function trim;
 
-trait SerializesSharedSecret
+trait SerializesSecret
 {
     /**
-     * Returns the Shared Secret as a URI.
+     * Returns the Secret as a URI.
      */
     public function toUri(): string
     {
-        $issuer = config('app.name');
+        $issuer = config('mfa.totp.issuer') ?: config('app.name');
+        $label =  config('mfa.totp.label') ?: $issuer;
         $query = http_build_query([
             'issuer' => $issuer,
-            'label' => $this->attributes['label'],
-            'secret' => $this->shared_secret,
-            'algorithm' => strtoupper($this->attributes['algorithm']),
-            'digits' => $this->attributes['digits'],
+            'label' => $label,
+            'secret' => $this->secret,
+            'algorithm' => 'sha1',
+            'digits' => 6,
         ], '', '&', PHP_QUERY_RFC3986);
 
         return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$this->attributes['label']."?$query";
@@ -39,7 +40,7 @@ trait SerializesSharedSecret
      */
     public function toQr(): string
     {
-        [$size, $margin] = array_values(config('lara-mfa.qr_code'));
+        [$size, $margin] = array_values(config('mfa.qr_code'));
 
         return (
             new Writer(new ImageRenderer(new RendererStyle($size, $margin), new SvgImageBackEnd()))
@@ -55,15 +56,15 @@ trait SerializesSharedSecret
     }
 
     /**
-     * Returns the Shared Secret as a string.
+     * Returns the Secret as a string.
      */
     public function toString(): string
     {
-        return $this->shared_secret;
+        return $this->secret;
     }
 
     /**
-     * Returns the Shared Secret as a string of 4-character groups.
+     * Returns the Secret as a string of 4-character groups.
      */
     public function toGroupedString(): string
     {
