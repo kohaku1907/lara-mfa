@@ -17,35 +17,35 @@ trait HasMultiFactorAuthentication
     public function emailFactor(): MorphOne
     {
         return $this->morphOne(MFAuth::class, 'authenticatable')->where('channel', Channel::Email)
-                ->withDefault([
-                    'channel' => Channel::Email,
-                    'enabled_at' => null,
-                    'secret' => null,
-                    'digits' => null,
-                ]);
+            ->withDefault([
+                'channel' => Channel::Email,
+                'enabled_at' => null,
+                'secret' => null,
+                'digits' => null,
+            ]);
     }
 
     public function smsFactor(): MorphOne
     {
         return $this->morphOne(MFAuth::class, 'authenticatable')->where('channel', Channel::Sms)
-                ->withDefault([
-                    'channel' => Channel::Sms,
-                    'enabled_at' => null,
-                    'secret' => null,
-                    'digits' => null,
-                ]);
+            ->withDefault([
+                'channel' => Channel::Sms,
+                'enabled_at' => null,
+                'secret' => null,
+                'digits' => null,
+            ]);
     }
 
     public function totpFactor(): MorphOne
     {
         return $this->morphOne(MFAuth::class, 'authenticatable')->where('channel', Channel::Totp)
-                ->withDefault([
-                    'channel' => Channel::Totp,
-                    'enabled_at' => null,
-                    'secret' => null,
-                    'digits' => null,
-                    'window' => null,
-                ]);
+            ->withDefault([
+                'channel' => Channel::Totp,
+                'enabled_at' => null,
+                'secret' => null,
+                'digits' => null,
+                'window' => null,
+            ]);
     }
 
     public function enableSmsMFAuth(string $code): void
