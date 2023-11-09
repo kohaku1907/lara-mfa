@@ -13,18 +13,19 @@ class MfCodeEmail extends Notification implements ShouldQueue
 
     public function __construct(
         public readonly string $code,
-    ) {}
+    ) {
+    }
 
     public function via(mixed $notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail(mixed $notifiable) : MailMessage
+    public function toMail(mixed $notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('Your code')
-            ->line('Your code is: ' . $this->code)
+            ->line('Your code is: '.$this->code)
             ->line('If you did not request this code, no further action is required.');
     }
 }

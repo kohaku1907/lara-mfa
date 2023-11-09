@@ -4,8 +4,8 @@ namespace Kohaku1907\LaraMFA\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Contracts\MultiFactorAuthenticatable;
+use Kohaku1907\LaraMfa\Enums\Channel;
 
 class VerifyMultiFactor
 {
@@ -13,19 +13,19 @@ class VerifyMultiFactor
     {
         $user = $request->user();
 
-        if(! $user instanceof MultiFactorAuthenticatable) {
+        if (! $user instanceof MultiFactorAuthenticatable) {
             return $next($request);
         }
 
         $valid = true;
         foreach (Channel::cases() as $channel) {
-            if($user->hasMultiFactorEnabled($channel) && !$this->recentlyConfirmed($request, $channel)) {
+            if ($user->hasMultiFactorEnabled($channel) && ! $this->recentlyConfirmed($request, $channel)) {
                 $valid = false;
                 break;
             }
         }
 
-        if(!$valid) {
+        if (! $valid) {
             // check if config redirect route is set else throw an exception unauthorized
             if (config('your_config_key')) {
                 // Redirect to the configured route

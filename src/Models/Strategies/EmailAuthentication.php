@@ -28,6 +28,7 @@ class EmailAuthentication implements AuthenticationStrategy
         for ($i = 0; $i < $length; $i++) {
             $code .= $characters[rand(0, strlen($characters) - 1)];
         }
+
         return $code;
     }
 }
