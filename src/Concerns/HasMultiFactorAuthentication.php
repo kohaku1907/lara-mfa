@@ -2,10 +2,10 @@
 
 namespace Kohaku1907\LaraMfa\Concerns;
 
-use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Kohaku1907\LaraMfa\Enums\Channel;
+use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 
 trait HasMultiFactorAuthentication
 {
@@ -81,11 +81,9 @@ trait HasMultiFactorAuthentication
         return $enabledAt !== null;
     }
 
-     /**
+    /**
      * Creates a new Multi Factor Auth mechanisms from scratch, and returns a new Secret in case Totp.
      * in case SMS or Email, it will send a code to the user.
-     *
-     * 
      */
     protected function createMultiFactorAuth(MFAuth $mfAuth): mixed
     {
@@ -98,7 +96,7 @@ trait HasMultiFactorAuthentication
             $this->multiFactors()->save($mfAuth);
         }
 
-        if(in_array($mfAuth->channel, [Channel::Sms, Channel::Email])) {
+        if (in_array($mfAuth->channel, [Channel::Sms, Channel::Email])) {
             $mfAuth->generateCode();
             $mfAuth->sendCode();
         }
@@ -120,6 +118,4 @@ trait HasMultiFactorAuthentication
     {
         return $this->createMFAuth($this->totpFactor);
     }
-
-    
 }

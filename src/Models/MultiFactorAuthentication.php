@@ -64,7 +64,7 @@ class MultiFactorAuthentication extends Model implements TotpFactor
      */
     public function generateCode(): string
     {
-        if($this->channel === Channel::Totp) {
+        if ($this->channel === Channel::Totp) {
             return $this->getAuthenticationStrategy()->generateCode();
         }
 
@@ -138,8 +138,6 @@ class MultiFactorAuthentication extends Model implements TotpFactor
 
     /**
      * Creates a new Random Secret.
-     *
-     * @return string
      */
     public static function generateRandomSecret(): string
     {

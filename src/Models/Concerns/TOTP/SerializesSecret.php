@@ -12,7 +12,6 @@ use function chunk_split;
 use function config;
 use function http_build_query;
 use function rawurlencode;
-use function strtoupper;
 use function trim;
 
 trait SerializesSecret
@@ -23,7 +22,7 @@ trait SerializesSecret
     public function toUri(): string
     {
         $issuer = config('mfa.totp.issuer') ?: config('app.name');
-        $label =  config('mfa.totp.label') ?: $issuer;
+        $label = config('mfa.totp.label') ?: $issuer;
         $query = http_build_query([
             'issuer' => $issuer,
             'label' => $label,

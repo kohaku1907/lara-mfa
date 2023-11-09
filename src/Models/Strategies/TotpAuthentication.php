@@ -18,7 +18,7 @@ class TotpAuthentication implements AuthenticationStrategy
     }
 
     public function verifyCode(string $code): bool
-    {   
+    {
         $offset = config('mfa.totp.offset');
 
         for ($i = 0; $i <= $offset; $i++) {
@@ -26,8 +26,9 @@ class TotpAuthentication implements AuthenticationStrategy
             $generatedCode = $this->generateCodeFromTime($time);
             if (hash_equals($generatedCode, $code)) {
                 return true;
-            }   
+            }
         }
+
         return false;
     }
 
