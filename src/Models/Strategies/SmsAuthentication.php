@@ -23,6 +23,7 @@ class SmsAuthentication implements AuthenticationStrategy
     public function generateCode(): string
     {
         $code = random_int(100000, 999999);
+
         return strval($code);
     }
 }

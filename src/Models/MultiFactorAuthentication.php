@@ -94,13 +94,15 @@ class MultiFactorAuthentication extends Model
      */
     public function verifyCode(string $code): bool
     {
-        if($this->getAuthenticationStrategy()->verifyCode($code)) {
+        if ($this->getAuthenticationStrategy()->verifyCode($code)) {
             $expireTime = Config::get("mfa.{$this->channel}.expire_time");
             request()->session()->put("mfa.{$this->channel}.expired_at", now()->addMinutes($expireTime)->getTimestamp());
 
             Cache::forget($this->getCacheKey());
+
             return true;
         }
+
         return false;
     }
 
@@ -123,7 +125,7 @@ class MultiFactorAuthentication extends Model
     protected function getCacheDuration(): int
     {
         $channelConfigKey = "mfa.{$this->channel}.code_timeout";
-        $defaultConfigKey = "mfa.default_code_timeout";
+        $defaultConfigKey = 'mfa.default_code_timeout';
 
         return Config::get($channelConfigKey, Config::get($defaultConfigKey));
     }

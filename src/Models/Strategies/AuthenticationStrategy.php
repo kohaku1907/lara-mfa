@@ -7,7 +7,7 @@ interface AuthenticationStrategy
     /**
      * Verify the given code.
      *
-     * @param string $code The code to verify.
+     * @param  string  $code The code to verify.
      * @return bool True if the code is valid, false otherwise.
      */
     public function verifyCode(string $code): bool;

@@ -49,8 +49,6 @@ trait HasMultiFactorAuthentication
         }
     }
 
-    
-
     public function hasMultiFactorEnabled(Channel $channel): bool
     {
         $enabledAt = $this->multiFactors()->where('channel', $channel)->value('enabled_at');
