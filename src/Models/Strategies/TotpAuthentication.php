@@ -31,6 +31,7 @@ class TotpAuthentication implements AuthenticationStrategy
             $generatedCode = $this->generateCodeFromTime($time);
             if (hash_equals($generatedCode, $code)) {
                 $this->setCodeAsUsed($code);
+
                 return true;
             }
         }

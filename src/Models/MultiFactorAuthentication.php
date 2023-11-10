@@ -13,9 +13,9 @@ use ParagonIE\ConstantTime\Base32;
 
 class MultiFactorAuthentication extends Model implements TotpFactor
 {
+    use HandlesCodes;
     use HasFactory;
     use SerializesSecret;
-    use HandlesCodes;
 
     protected $table = 'multi_factor_authentications';
 

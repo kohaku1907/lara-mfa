@@ -10,9 +10,9 @@ use Kohaku1907\LaraMfa\Models\Concerns\HandlesSafeDevices;
 
 class MultiFactorSetting extends Model
 {
-    use HasFactory;
-    use HandlesSafeDevices;
     use HandlesRecoveryCodes;
+    use HandlesSafeDevices;
+    use HasFactory;
 
     protected $table = 'multi_factor_settings';
 
