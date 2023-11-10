@@ -29,5 +29,5 @@ interface MultiFactorAuthenticatable
 
     public function getMfaRedirectRoute(): ?string;
 
-    public function setMfaRedirectRoute(): ?string;
+    public function setMfaRedirectRoute(string $route): void;
 }
