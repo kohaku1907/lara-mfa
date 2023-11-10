@@ -2,6 +2,7 @@
 
 namespace Kohaku1907\LaraMfa;
 
+use Illuminate\Routing\Router;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
