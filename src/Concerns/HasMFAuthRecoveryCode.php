@@ -1,6 +1,7 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Concerns;
+
 use Illuminate\Support\Collection;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthSetting as MFASetting;
 
@@ -18,8 +19,6 @@ trait HasMFAuthRecoveryCode
 
     /**
      * Return the current set of Recovery Codes.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getRecoveryCodes(): Collection
     {
@@ -28,8 +27,6 @@ trait HasMFAuthRecoveryCode
 
     /**
      * Generates a new set of Recovery Codes.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function generateRecoveryCodes(): Collection
     {
