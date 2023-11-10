@@ -3,7 +3,7 @@
 namespace Kohaku1907\LaraMfa\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Routing\Route;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
@@ -17,9 +17,9 @@ trait HasMultiFactorAuthentication
         $this->validateMfaRedirectRoute();
     }
 
-    protected function multiFactors(): MorphToMany
+    public function multiFactors(): MorphMany
     {
-        return $this->morphToMany(MFAuth::class, 'authenticatable');
+        return $this->morphMany(related: MFAuth::class, name: 'authenticatable');
     }
 
     protected function emailFactor(): MorphOne
@@ -111,7 +111,7 @@ trait HasMultiFactorAuthentication
     public function hasMultiFactorEnabled(Channel $channel = null): bool
     {
         if ($channel === null) {
-            return $this->multiFactors()->count() > 0;
+            return $this->multiFactors()->whereNotNull('enabled_at')->exists();
         }
 
         $enabledAt = $this->multiFactors()->where('channel', $channel)->value('enabled_at');
