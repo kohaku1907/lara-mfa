@@ -13,7 +13,7 @@ class LaraMfaServiceProvider extends PackageServiceProvider
         $package
             ->name('lara-mfa')
             ->hasConfigFile('mfa')
-            ->hasMigrations(['create_lara-mfa_table', 'create_lara_mfa_settings_table']);
+            ->hasMigrations(['create_lara_mfa_table', 'create_lara_mfa_settings_table']);
     }
 
     public function bootingPackage(): void
