@@ -82,8 +82,38 @@ trait HasMultiFactorAuthentication
         }
     }
 
-    public function hasMultiFactorEnabled(Channel $channel): bool
+    public function disableSmsMFAuth(string $code): void
     {
+        $this->disableMFAuth($this->smsFactor, $code);
+    }
+
+    public function disableEmailMFAuth(string $code): void
+    {
+        $this->disableMFAuth($this->emailFactor, $code);
+    }
+
+    public function disableTotpMFAuth(string $code): void
+    {
+        $this->disableMFAuth($this->totpFactor, $code);
+    }
+
+    protected function disableMFAuth(MFAuth $mfAuth, $code): void
+    {
+        if ($mfAuth->verifyCode($code)) {
+            $this->multiFactors()->where('channel', $mfAuth->channel)->update([
+                'enabled_at' => null,
+            ]);
+        } else {
+            throw new \Exception('Invalid verification code');
+        }
+    }
+
+    public function hasMultiFactorEnabled(Channel $channel = null): bool
+    {
+        if ($channel === null) {
+            return $this->multiFactors()->count() > 0;
+        }
+        
         $enabledAt = $this->multiFactors()->where('channel', $channel)->value('enabled_at');
 
         return $enabledAt !== null;
@@ -129,7 +159,7 @@ trait HasMultiFactorAuthentication
         $this->mfaRedirectRoute = $route;
     }
 
-    public function getMfaRedirectRoute(): string
+    public function getMfaRedirectRoute(): ?string
     {
         return $this->mfaRedirectRoute;
     }
