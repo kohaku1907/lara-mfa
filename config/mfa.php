@@ -24,13 +24,13 @@ return [
         ],
     ],
     'safe_devices' => [
-        'cookie'          => '_mfa_remember',
-        'max_devices'     => 5,
+        'cookie' => '_mfa_remember',
+        'max_devices' => 5,
         'expiration_days' => 14,
     ],
     'recovery' => [
-        'codes'   => 10,
-        'length'  => 8,
+        'codes' => 10,
+        'length' => 8,
     ],
 
 ];

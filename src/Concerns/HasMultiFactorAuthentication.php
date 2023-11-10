@@ -134,8 +134,9 @@ trait HasMultiFactorAuthentication
         return $this->mfaRedirectRoute;
     }
 
-    protected function validateMfaRedirectRoute(): void {
-        if($this->mfaRedirectRoute !== null && !Route::has($this->mfaRedirectRoute)) {
+    protected function validateMfaRedirectRoute(): void
+    {
+        if ($this->mfaRedirectRoute !== null && ! Route::has($this->mfaRedirectRoute)) {
             throw new \Exception('Invalid MFA redirect route: '.$this->mfaRedirectRoute);
         }
     }

@@ -1,17 +1,16 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Concerns;
+
 use Illuminate\Http\Request;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthSetting as MFASetting;
 
 trait HasMFAuthSafeDevice
 {
     use HasMFASetting;
-     /**
+
+    /**
      * Adds a "safe" Device from the Request, and returns the token used.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string
      */
     public function addSafeDevice(Request $request): string
     {
@@ -22,8 +21,8 @@ trait HasMFAuthSafeDevice
         $this->mfaSetting->safe_devices = $this->safeDevices()
             ->push([
                 'mfa_remember' => $token = $this->generateMFRemember(),
-                'ip'           => $request->ip(),
-                'added_at'     => $this->freshTimestamp()->getTimestamp(),
+                'ip' => $request->ip(),
+                'added_at' => $this->freshTimestamp()->getTimestamp(),
             ])
             ->sortByDesc('added_at') // Ensure the last is the first, so we can slice it.
             ->slice(0, config('mfa.safe_devices.max_devices', 5))
@@ -38,8 +37,6 @@ trait HasMFAuthSafeDevice
 
     /**
      * Generates a Device token to bypass Multi-Factor Authentication.
-     *
-     * @return string
      */
     protected function generateMFRemember(): string
     {
@@ -48,8 +45,6 @@ trait HasMFAuthSafeDevice
 
     /**
      * Deletes all saved safe devices.
-     *
-     * @return bool
      */
     public function flushSafeDevices(): bool
     {
@@ -68,9 +63,6 @@ trait HasMFAuthSafeDevice
 
     /**
      * Determines if the Request has been made through a previously used "safe" device.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
      */
     public function isSafeDevice(Request $request): bool
     {
@@ -85,9 +77,6 @@ trait HasMFAuthSafeDevice
 
     /**
      * Returns the Multi-Factor Remember Token of the request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string|null
      */
     protected function getMultiFactorRememberFromRequest(Request $request): ?string
     {
@@ -96,9 +85,6 @@ trait HasMFAuthSafeDevice
 
     /**
      * Determines if the Request has been made through a not-previously-known device.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
      */
     public function isNotSafeDevice(Request $request): bool
     {
