@@ -1,6 +1,6 @@
 <?php
 
-namespace Kohaku1907\LaraMfa\Models\Concerns\TOTP;
+namespace Kohaku1907\LaraMfa\Models\Concerns;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;

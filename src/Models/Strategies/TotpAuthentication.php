@@ -2,6 +2,7 @@
 
 namespace Kohaku1907\LaraMfa\Models\Strategies;
 
+use Illuminate\Support\Facades\Cache;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
 class TotpAuthentication implements AuthenticationStrategy
@@ -19,12 +20,17 @@ class TotpAuthentication implements AuthenticationStrategy
 
     public function verifyCode(string $code): bool
     {
-        $offset = config('mfa.totp.offset');
+        if ($this->codeHasBeenUsed($code)) {
+            return false;
+        }
 
-        for ($i = 0; $i <= $offset; $i++) {
+        $periods = config('mfa.totp.offset_periods');
+
+        for ($i = 0; $i <= $periods; $i++) {
             $time = time() - ($i * $this->seconds);
             $generatedCode = $this->generateCodeFromTime($time);
             if (hash_equals($generatedCode, $code)) {
+                $this->setCodeAsUsed($code);
                 return true;
             }
         }
@@ -57,5 +63,33 @@ class TotpAuthentication implements AuthenticationStrategy
         ) % pow(10, $this->digits); // Calculate code
 
         return str_pad($code, $this->digits, '0', STR_PAD_LEFT); // Pad code with leading zeros
+    }
+
+    /**
+     * Returns the cache key string to save the codes into the cache.
+     */
+    protected function cacheKey(string $code): string
+    {
+        return implode('|', ['mfa.totp_code', $this->mfa->getKey(), $code]);
+    }
+
+    /**
+     * Checks if the code has been used.
+     */
+    protected function codeHasBeenUsed(string $code): bool
+    {
+        return Cache::has($this->cacheKey($code));
+    }
+
+    /**
+     * Sets the Code has used, so it can't be used again.
+     */
+    protected function setCodeAsUsed(string $code): void
+    {
+        $offset = config('mfa.totp.offset_periods') + 1; // Add 1 more period to the offset
+        $periods = (time() / $this->seconds) + $offset;
+        $timestamp = (int) $periods * $this->seconds;
+
+        Cache::set($this->cacheKey($code), true, $timestamp);
     }
 }

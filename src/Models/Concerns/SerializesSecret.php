@@ -1,6 +1,6 @@
 <?php
 
-namespace Kohaku1907\LaraMfa\Models\Concerns\TOTP;
+namespace Kohaku1907\LaraMfa\Models\Concerns;
 
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;

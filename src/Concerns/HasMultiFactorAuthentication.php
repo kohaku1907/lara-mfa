@@ -40,7 +40,7 @@ trait HasMultiFactorAuthentication
             ->withDefault([
                 'channel' => Channel::Totp,
                 'enabled_at' => null,
-                'secret' => null,
+                'secret' => MFAuth::generateRandomSecret(),
             ]);
     }
 
@@ -89,9 +89,6 @@ trait HasMultiFactorAuthentication
     {
         // check if  $mfAuth not exist in database create it and  associate with user
         if ($mfAuth->exists === false) {
-            if ($mfAuth->channel === Channel::Totp) {
-                $mfAuth->secret = $mfAuth::generateRandomSecret();
-            }
             $mfAuth->save();
             $this->multiFactors()->save($mfAuth);
         }
