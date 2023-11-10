@@ -1,6 +1,7 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Concerns;
+
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthSetting as MFASetting;
 
 trait HasMFAuthRecoveryCode

@@ -54,8 +54,6 @@ trait HasMFAuthSafeDevice
 
     /**
      * Return all the Safe Devices that bypass Multi-Factor Authentication.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function safeDevices(): Collection
     {

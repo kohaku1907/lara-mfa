@@ -113,7 +113,7 @@ trait HasMultiFactorAuthentication
         if ($channel === null) {
             return $this->multiFactors()->count() > 0;
         }
-        
+
         $enabledAt = $this->multiFactors()->where('channel', $channel)->value('enabled_at');
 
         return $enabledAt !== null;
