@@ -5,7 +5,6 @@ namespace Kohaku1907\LaraMfa\Models\Concerns;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-
 trait HandlesRecoveryCodes
 {
     /**

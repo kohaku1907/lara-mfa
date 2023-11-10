@@ -1,16 +1,14 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Concerns;
-use Illuminate\Support\Collection;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthSetting as MFASetting;
 
 trait HasMFAuthRecoveryCode
 {
     use HasMFASetting;
-   /**
+
+    /**
      * Determines if the User has Recovery Codes available.
-     *
-     * @return bool
      */
     protected function hasRecoveryCodes(): bool
     {
@@ -50,7 +48,6 @@ trait HasMFAuthRecoveryCode
     /**
      * Uses a one-time Recovery Code if there is one available.
      *
-     * @param  string  $code
      * @return mixed
      */
     protected function useRecoveryCode(string $code): bool
@@ -63,5 +60,4 @@ trait HasMFAuthRecoveryCode
 
         return true;
     }
-
 }
