@@ -5,9 +5,6 @@ namespace Kohaku1907\LaraMfa\Models\Concerns;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-use function is_int;
-use function now;
-use function strtoupper;
 
 trait HandlesRecoveryCodes
 {

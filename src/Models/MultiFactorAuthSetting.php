@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Kohaku1907\LaraMfa\Models\Concerns\HandlesRecoveryCodes;
 use Kohaku1907\LaraMfa\Models\Concerns\HandlesSafeDevices;
 
-class MultiFactorSetting extends Model
+class MultiFactorAuthSetting extends Model
 {
     use HandlesRecoveryCodes;
     use HandlesSafeDevices;
     use HasFactory;
 
-    protected $table = 'multi_factor_settings';
+    protected $table = 'multi_factor_auth_settings';
 
     protected $guarded = [];
 

@@ -20,9 +20,9 @@ trait HandlesSafeDevices
     }
 
     /**
-     * Generates a Device token to bypass Two-Factor Authentication.
+     * Generates a Device token to bypass Multi-Factor Authentication.
      */
-    public static function generateDefaultTwoFactorRemember(): string
+    public static function generateDefaultRemember(): string
     {
         return Str::random(100);
     }

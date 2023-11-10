@@ -4,11 +4,19 @@ namespace Kohaku1907\LaraMfa\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Routing\Route;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 
 trait HasMultiFactorAuthentication
 {
+    protected $mfaRedirectRoute;
+
+    public function initializeHasMultiFactorAuthentication()
+    {
+        $this->validateMfaRedirectRoute();
+    }
+
     protected function multiFactors(): MorphToMany
     {
         return $this->morphToMany(MFAuth::class, 'authenticatable');
@@ -114,5 +122,21 @@ trait HasMultiFactorAuthentication
     public function createTotpMFAuth(): MFAuth
     {
         return $this->createMFAuth($this->totpFactor);
+    }
+
+    public function setMfaRedirectRoute(string $route): void
+    {
+        $this->mfaRedirectRoute = $route;
+    }
+
+    public function getMfaRedirectRoute(): string
+    {
+        return $this->mfaRedirectRoute;
+    }
+
+    protected function validateMfaRedirectRoute(): void {
+        if($this->mfaRedirectRoute !== null && !Route::has($this->mfaRedirectRoute)) {
+            throw new \Exception('Invalid MFA redirect route: '.$this->mfaRedirectRoute);
+        }
     }
 }

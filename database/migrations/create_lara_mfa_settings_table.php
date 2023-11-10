@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('multi_factor_settings', function (Blueprint $table) {
+        Schema::create('multi_factor_auth_settings', function (Blueprint $table) {
             $table->id();
             $table->morphs('authenticatable', 'mfa_setting_type_auth_id_index');
             $table->text('recovery_codes')->nullable();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('multi_factor_settings');
+        Schema::dropIfExists('multi_factor_auth_settings');
     }
 };

@@ -23,9 +23,8 @@ class ForceVerifyMultiFactor
             }
 
             if (! $user->hasMultiFactorEnabled($channel) || ! $this->recentlyConfirmed($request, $channel)) {
-                if (config('your_config_key')) {
-                    // Redirect to the configured route
-                    return redirect()->route(config('your_config_key'));
+                if ($user->getMfaRedirectRoute()) {
+                    return redirect()->route($user->getMfaRedirectRoute());
                 } else {
                     throw new \Exception('Unauthorized');
                 }

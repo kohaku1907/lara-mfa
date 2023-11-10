@@ -27,8 +27,8 @@ class VerifyMultiFactor
 
         if (! $valid) {
             // check if config redirect route is set else throw an exception unauthorized
-            if (config('your_config_key')) {
-                // Redirect to the configured route
+            if ($user->getMfaRedirectRoute()) {
+                return redirect()->route($user->getMfaRedirectRoute());
             } else {
                 throw new \Exception('Unauthorized');
             }
