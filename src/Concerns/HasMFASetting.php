@@ -7,7 +7,7 @@ use Kohaku1907\LaraMfa\Models\MultiFactorAuthSetting as MFASetting;
 
 trait HasMFASetting
 {
-    protected function mfaSetting(): MorphOne
+    public function mfaSetting(): MorphOne
     {
         return $this->morphOne(MFASetting::class, 'authenticatable');
     }
