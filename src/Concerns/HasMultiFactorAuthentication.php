@@ -20,7 +20,7 @@ trait HasMultiFactorAuthentication
     {
         return $this->morphMany(related: MFAuth::class, name: 'authenticatable');
     }
- 
+
     public function getAvailableFactors(): array
     {
         $availableFactors = [];
@@ -40,13 +40,13 @@ trait HasMultiFactorAuthentication
         return $availableFactors;
     }
 
-    public function hasMultiFactorEnabled(?string $channel = null): bool
+    public function hasMultiFactorEnabled(string $channel = null): bool
     {
         if ($channel === null) {
             return $this->multiFactors()->whereNotNull('enabled_at')->exists();
         }
 
-        if(! in_array($channel, $this->getAvailableFactors())) {
+        if (! in_array($channel, $this->getAvailableFactors())) {
             return false;
         }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Concerns;
+
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
@@ -8,7 +9,7 @@ use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 trait HasEmailFactorAuth
 {
     use BaseFactorAuth;
-    
+
     public function emailFactor(): MorphOne
     {
         return $this->morphOne(MFAuth::class, 'authenticatable')->where('channel', Channel::Email)

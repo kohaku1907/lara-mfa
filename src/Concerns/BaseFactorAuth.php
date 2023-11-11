@@ -1,6 +1,7 @@
 <?php
 
 namespace Kohaku1907\LaraMfa\Concerns;
+
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
@@ -22,8 +23,10 @@ trait BaseFactorAuth
                     'enabled_at' => now(),
                 ]
             );
+
             return true;
         }
+
         return false;
     }
 
@@ -33,8 +36,10 @@ trait BaseFactorAuth
             $this->baseMultiFactors()->where('channel', $mfAuth->channel)->update([
                 'enabled_at' => null,
             ]);
+
             return true;
         }
+
         return false;
     }
 

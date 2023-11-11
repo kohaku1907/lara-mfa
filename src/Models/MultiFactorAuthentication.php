@@ -37,8 +37,6 @@ class MultiFactorAuthentication extends Model implements TotpFactor
 
     /**
      * Returns if the Multi-Factor Authentication has been enabled.
-     *
-     * @return bool
      */
     public function isEnabled(): bool
     {
@@ -47,14 +45,11 @@ class MultiFactorAuthentication extends Model implements TotpFactor
 
     /**
      * Returns if the Multi-Factor Authentication is not been enabled.
-     *
-     * @return bool
      */
     public function isDisabled(): bool
     {
         return ! $this->isEnabled();
     }
-
 
     /**
      * Creates a new Random Secret.
