@@ -8,7 +8,6 @@ use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 
 trait HasTotpAuth
 {
-    use BaseFactorAuth;
 
     public function totpFactor(): MorphOne
     {
@@ -22,6 +21,9 @@ trait HasTotpAuth
 
     public function createTotpMFAuth(): MFAuth
     {
-        return $this->createMFAuth($this->totpFactor);
+        if ($this->totpFactor->exists === false) {
+            $this->totpFactor->save();     
+        }
+        return $this->totpFactor;
     }
 }

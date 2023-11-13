@@ -20,6 +20,14 @@ trait HasEmailFactorAuth
 
     public function createEmailMFAuth(): MFAuth
     {
-        return $this->createMFAuth($this->emailFactor);
+        if ($this->emailFactor->exists === false) {
+            $this->emailFactor->save();
+            
+        }
+
+        $this->emailFactor->generateCode();
+        $this->emailFactor->sendCode();
+
+        return $this->emailFactor;
     }
 }

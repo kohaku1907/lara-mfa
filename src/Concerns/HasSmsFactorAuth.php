@@ -8,8 +8,6 @@ use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 
 trait HasSmsFactorAuth
 {
-    use BaseFactorAuth;
-
     public function smsFactor(): MorphOne
     {
         return $this->morphOne(MFAuth::class, 'authenticatable')->where('channel', Channel::Sms)
@@ -22,6 +20,13 @@ trait HasSmsFactorAuth
 
     public function createSmsMFAuth(): MFAuth
     {
-        return $this->createMFAuth($this->smsFactor);
+        if ($this->smsFactor->exists === false) {
+            $this->smsFactor->save();     
+        }
+
+        $this->smsFactor->generateCode();
+        $this->smsFactor->sendCode();
+
+        return $this->smsFactor;
     }
 }
