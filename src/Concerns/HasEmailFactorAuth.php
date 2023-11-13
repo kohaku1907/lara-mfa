@@ -22,7 +22,7 @@ trait HasEmailFactorAuth
     {
         if ($this->emailFactor->exists === false) {
             $this->emailFactor->save();
-            
+
         }
 
         $this->emailFactor->generateCode();
