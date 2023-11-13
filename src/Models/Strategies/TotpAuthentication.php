@@ -5,18 +5,11 @@ namespace Kohaku1907\LaraMfa\Models\Strategies;
 use Illuminate\Support\Facades\Cache;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
-class TotpAuthentication implements AuthenticationStrategy
+class TotpAuthentication extends BaseAuthentication implements AuthenticationStrategy
 {
-    private MultiFactorAuthentication $mfa;
-
     private $seconds = 30;
 
     private $digits = 6;
-
-    public function __construct(MultiFactorAuthentication $mfa)
-    {
-        $this->mfa = $mfa;
-    }
 
     public function verifyCode(string $code): bool
     {

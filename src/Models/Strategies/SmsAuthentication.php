@@ -4,15 +4,8 @@ namespace Kohaku1907\LaraMfa\Models\Strategies;
 
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
-class SmsAuthentication implements AuthenticationStrategy
+class SmsAuthentication extends BaseAuthentication implements AuthenticationStrategy
 {
-    private MultiFactorAuthentication $mfa;
-
-    public function __construct(MultiFactorAuthentication $mfa)
-    {
-        $this->mfa = $mfa;
-    }
-
     public function verifyCode(string $code): bool
     {
         $storedCode = $this->mfa->getCode();

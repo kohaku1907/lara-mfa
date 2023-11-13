@@ -18,4 +18,8 @@ interface AuthenticationStrategy
      * @return string The generated code.
      */
     public function generateCode(): string;
+
+    public function enable($code): bool;
+
+    public function disable($code): bool;
 }

@@ -20,16 +20,6 @@ trait HasTotpAuth
             ]);
     }
 
-    public function enableTotpMFAuth(string $code): bool
-    {
-        return $this->enableMFAuth($this->totpFactor, $code);
-    }
-
-    public function disableTotpMFAuth(string $code): bool
-    {
-        return $this->disableMFAuth($this->totpFactor, $code);
-    }
-
     public function createTotpMFAuth(): MFAuth
     {
         return $this->createMFAuth($this->totpFactor);

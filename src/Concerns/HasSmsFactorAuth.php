@@ -20,16 +20,6 @@ trait HasSmsFactorAuth
             ]);
     }
 
-    public function enableSmsMFAuth(string $code): bool
-    {
-        return $this->enableMFAuth($this->smsFactor, $code);
-    }
-
-    public function disableSmsMFAuth(string $code): bool
-    {
-        return $this->disableMFAuth($this->smsFactor, $code);
-    }
-
     public function createSmsMFAuth(): MFAuth
     {
         return $this->createMFAuth($this->smsFactor);

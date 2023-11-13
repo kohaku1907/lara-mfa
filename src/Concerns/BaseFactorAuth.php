@@ -13,36 +13,6 @@ trait BaseFactorAuth
         return $this->morphMany(related: MFAuth::class, name: 'authenticatable');
     }
 
-    public function enableMFAuth(MFAuth $mfAuth, $code): bool
-    {
-        if ($mfAuth->isDisabled() && $mfAuth->verifyCode($code)) {
-            $this->baseMultiFactors()->updateOrCreate(
-                ['channel' => $mfAuth->channel],
-                [
-                    'channel' => $mfAuth->channel,
-                    'enabled_at' => now(),
-                ]
-            );
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public function disableMFAuth(MFAuth $mfAuth, $code): bool
-    {
-        if ($mfAuth->isEnabled() && $mfAuth->verifyCode($code)) {
-            $this->baseMultiFactors()->where('channel', $mfAuth->channel)->update([
-                'enabled_at' => null,
-            ]);
-
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * Creates a new Multi Factor Auth mechanisms from scratch, and returns a new Secret in case Totp.
      * in case SMS or Email, it will send a code to the user.

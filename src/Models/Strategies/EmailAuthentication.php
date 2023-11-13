@@ -4,14 +4,8 @@ namespace Kohaku1907\LaraMfa\Models\Strategies;
 
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
-class EmailAuthentication implements AuthenticationStrategy
+class EmailAuthentication extends BaseAuthentication implements AuthenticationStrategy
 {
-    private MultiFactorAuthentication $mfa;
-
-    public function __construct(MultiFactorAuthentication $mfa)
-    {
-        $this->mfa = $mfa;
-    }
 
     public function verifyCode(string $code): bool
     {
