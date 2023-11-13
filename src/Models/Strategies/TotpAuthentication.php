@@ -3,7 +3,6 @@
 namespace Kohaku1907\LaraMfa\Models\Strategies;
 
 use Illuminate\Support\Facades\Cache;
-use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
 class TotpAuthentication extends BaseAuthentication implements AuthenticationStrategy
 {

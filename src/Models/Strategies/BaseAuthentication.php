@@ -13,13 +13,13 @@ abstract class BaseAuthentication
         $this->mfa = $mfa;
     }
 
-
     public function enable($code): bool
     {
         if ($this->mfa->isDisabled() && $this->mfa->verifyCode($code)) {
             $this->mfa->update([
                 'enabled_at' => now(),
             ]);
+
             return true;
         }
 
@@ -32,6 +32,7 @@ abstract class BaseAuthentication
             $this->mfa->update([
                 'enabled_at' => null,
             ]);
+
             return true;
         }
 
