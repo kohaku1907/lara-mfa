@@ -26,7 +26,7 @@ class ForceVerifyMultiFactor
                 if ($user->getMfaRedirectRoute()) {
                     return redirect()->route($user->getMfaRedirectRoute());
                 } else {
-                    throw new \Exception('Unauthorized');
+                    abort(401);
                 }
             }
         }

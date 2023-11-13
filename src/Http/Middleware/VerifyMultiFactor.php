@@ -19,6 +19,7 @@ class VerifyMultiFactor
 
         $valid = true;
         foreach (Channel::cases() as $channel) {
+            $channel = $channel->value;
             if ($user->hasMultiFactorEnabled($channel) && ! $this->recentlyConfirmed($request, $channel)) {
                 $valid = false;
                 break;
@@ -30,14 +31,14 @@ class VerifyMultiFactor
             if ($user->getMfaRedirectRoute()) {
                 return redirect()->route($user->getMfaRedirectRoute());
             } else {
-                throw new \Exception('Unauthorized');
+                abort(401);
             }
         }
 
         return $next($request);
     }
 
-    protected function recentlyConfirmed(Request $request, $channel): bool
+    protected function recentlyConfirmed(Request $request,string $channel): bool
     {
         return $request->session()->get("mfa.{$channel}.expired_at") >= now()->getTimestamp();
     }

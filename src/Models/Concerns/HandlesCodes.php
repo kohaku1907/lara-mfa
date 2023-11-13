@@ -61,7 +61,7 @@ trait HandlesCodes
             return;
         }
 
-        $notificationClass = Config::get("mfa.{$this->channel}.notification");
+        $notificationClass = Config::get("mfa.{$this->channel->value}.notification");
         $this->authenticatable->notify(new $notificationClass($this->generateCode()));
     }
 
@@ -71,8 +71,8 @@ trait HandlesCodes
     public function verifyCode(string $code): bool
     {
         if ($this->getAuthenticationStrategy()->verifyCode($code)) {
-            $expireTime = Config::get("mfa.{$this->channel}.expire_time");
-            request()->session()->put("mfa.{$this->channel}.expired_at", now()->addMinutes($expireTime)->getTimestamp());
+            $expireTime = Config::get("mfa.{$this->channel->value}.expire_time");
+            request()->session()->put("mfa.{$this->channel->value}.expired_at", now()->addMinutes($expireTime)->getTimestamp());
 
             Cache::forget($this->getCacheKey());
 
@@ -87,6 +87,17 @@ trait HandlesCodes
         return Cache::get($this->getCacheKey());
     }
 
+    public function enable(string $code): bool
+    {
+        return $this->getAuthenticationStrategy()->enable($code);
+    }
+
+    public function disable(string $code): bool
+    {
+        return $this->getAuthenticationStrategy()->disable($code);
+    }
+
+
     /**
      * Get the cache key for the current MFA instance.
      */
@@ -100,7 +111,7 @@ trait HandlesCodes
      */
     protected function getCacheDuration(): int
     {
-        $channelConfigKey = "mfa.{$this->channel}.code_timeout";
+        $channelConfigKey = "mfa.{$this->channel->value}.code_timeout";
         $defaultConfigKey = 'mfa.default_code_timeout';
 
         return Config::get($channelConfigKey, Config::get($defaultConfigKey));

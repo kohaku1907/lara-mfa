@@ -18,7 +18,7 @@ trait HasEmailFactorAuth
             ]);
     }
 
-    public function createEmailMFAuth(): MFAuth
+    public function createEmailFactorAuth(): MFAuth
     {
         if ($this->emailFactor->exists === false) {
             $this->emailFactor->save();

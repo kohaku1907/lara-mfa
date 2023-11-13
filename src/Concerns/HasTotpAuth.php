@@ -19,7 +19,7 @@ trait HasTotpAuth
             ]);
     }
 
-    public function createTotpMFAuth(): MFAuth
+    public function createTotpFactorAuth(): MFAuth
     {
         if ($this->totpFactor->exists === false) {
             $this->totpFactor->save();     

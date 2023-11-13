@@ -26,15 +26,15 @@ trait HasMultiFactorAuthentication
         $availableFactors = [];
 
         if (in_array(HasSmsFactorAuth::class, class_uses(static::class))) {
-            $availableFactors[] = Channel::Sms;
+            $availableFactors[] = Channel::Sms->value;
         }
 
         if (in_array(HasEmailFactorAuth::class, class_uses(static::class))) {
-            $availableFactors[] = Channel::Email;
+            $availableFactors[] = Channel::Email->value;
         }
 
         if (in_array(HasTotpAuth::class, class_uses(static::class))) {
-            $availableFactors[] = Channel::Totp;
+            $availableFactors[] = Channel::Totp->value;
         }
 
         return $availableFactors;

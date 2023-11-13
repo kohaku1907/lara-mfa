@@ -18,7 +18,7 @@ trait HasSmsFactorAuth
             ]);
     }
 
-    public function createSmsMFAuth(): MFAuth
+    public function createSmsFactorAuth(): MFAuth
     {
         if ($this->smsFactor->exists === false) {
             $this->smsFactor->save();     
