@@ -27,12 +27,7 @@ class VerifyMultiFactor
         }
 
         if (! $valid) {
-            // check if config redirect route is set else throw an exception unauthorized
-            if ($user->getMfaRedirectRoute()) {
-                return redirect()->route($user->getMfaRedirectRoute());
-            } else {
-                abort(401);
-            }
+            return $user->multiFactorAuthRedirect();
         }
 
         return $next($request);

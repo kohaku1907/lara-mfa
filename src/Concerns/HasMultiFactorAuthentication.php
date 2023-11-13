@@ -3,17 +3,19 @@
 namespace Kohaku1907\LaraMfa\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Routing\Route;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
+use Illuminate\Support\Facades\Route;
+use Closure;
 
 trait HasMultiFactorAuthentication
 {
-    protected $mfaRedirectRoute;
+    protected $redirectRoute;
+    protected $beforeRedirect;
 
     public function initializeHasMultiFactorAuthentication()
     {
-        $this->validateMfaRedirectRoute();
+        $this->registerMultiFactorAuthentication();
     }
 
     public function multiFactors(): MorphMany
@@ -55,20 +57,29 @@ trait HasMultiFactorAuthentication
         return $enabledAt !== null;
     }
 
-    public function setMfaRedirectRoute(string $route): void
+    public function registerMultiFactorAuthentication(): void
     {
-        $this->mfaRedirectRoute = $route;
     }
 
-    public function getMfaRedirectRoute(): ?string
+    public function configureRedirectRoute(string $route, Closure $beforeRedirect = null): void
     {
-        return $this->mfaRedirectRoute;
+        $this->redirectRoute = $route;
+        $this->beforeRedirect = $beforeRedirect;
     }
 
-    protected function validateMfaRedirectRoute(): void
+    public function multiFactorAuthRedirect(): mixed
     {
-        if ($this->mfaRedirectRoute !== null && ! Route::has($this->mfaRedirectRoute)) {
-            throw new \Exception('Invalid MFA redirect route: '.$this->mfaRedirectRoute);
+        if ($this->beforeRedirect) {
+            call_user_func($this->beforeRedirect);
+        }
+        
+        if ($this->redirectRoute) {
+            if(Route::has($this->redirectRoute))
+                return redirect()->route($this->redirectRoute);
+            else
+                return redirect($this->redirectRoute);
+        } else {
+            abort(401);
         }
     }
 }

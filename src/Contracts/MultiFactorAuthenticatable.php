@@ -6,29 +6,11 @@ use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
 
 interface MultiFactorAuthenticatable
 {
-    // public function createSmsMFAuth(): MultiFactorAuthentication;
-
-    // public function createEmailMFAuth(): MultiFactorAuthentication;
-
-    // public function createTotpMFAuth(): MultiFactorAuthentication;
-
-    // public function enableSmsMFAuth(string $code): void;
-
-    // public function enableEmailMFAuth(string $code): void;
-
-    // public function enableTotpMFAuth(string $code): void;
-
-    // public function disableSmsMFAuth(string $code): void;
-
-    // public function disableEmailMFAuth(string $code): void;
-
-    // public function disableTotpMFAuth(string $code): void;
+    public function registerMultiFactorAuthentication(): void;
 
     public function getAvailableFactors(): array;
 
     public function hasMultiFactorEnabled(?string $channel): bool;
 
-    public function getMfaRedirectRoute(): ?string;
-
-    public function setMfaRedirectRoute(string $route): void;
+    public function multiFactorAuthRedirect(): mixed;
 }

@@ -23,11 +23,7 @@ class ForceVerifyMultiFactor
             }
 
             if (! $user->hasMultiFactorEnabled($channel) || ! $this->recentlyConfirmed($request, $channel)) {
-                if ($user->getMfaRedirectRoute()) {
-                    return redirect()->route($user->getMfaRedirectRoute());
-                } else {
-                    abort(401);
-                }
+                return $user->multiFactorAuthRedirect();
             }
         }
 
