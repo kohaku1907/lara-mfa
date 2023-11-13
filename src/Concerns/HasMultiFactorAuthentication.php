@@ -2,15 +2,16 @@
 
 namespace Kohaku1907\LaraMfa\Concerns;
 
+use Closure;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Route;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
-use Illuminate\Support\Facades\Route;
-use Closure;
 
 trait HasMultiFactorAuthentication
 {
     protected $redirectRoute;
+
     protected $beforeRedirect;
 
     public function initializeHasMultiFactorAuthentication()
@@ -72,12 +73,13 @@ trait HasMultiFactorAuthentication
         if ($this->beforeRedirect) {
             call_user_func($this->beforeRedirect);
         }
-        
+
         if ($this->redirectRoute) {
-            if(Route::has($this->redirectRoute))
+            if (Route::has($this->redirectRoute)) {
                 return redirect()->route($this->redirectRoute);
-            else
+            } else {
                 return redirect($this->redirectRoute);
+            }
         } else {
             abort(401);
         }
