@@ -2,8 +2,6 @@
 
 namespace Kohaku1907\LaraMfa\Models\Strategies;
 
-use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
-
 class SmsAuthentication extends BaseAuthentication implements AuthenticationStrategy
 {
     public function verifyCode(string $code): bool

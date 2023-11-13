@@ -2,11 +2,8 @@
 
 namespace Kohaku1907\LaraMfa\Models\Strategies;
 
-use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication;
-
 class EmailAuthentication extends BaseAuthentication implements AuthenticationStrategy
 {
-
     public function verifyCode(string $code): bool
     {
         $storedCode = $this->mfa->getCode();
