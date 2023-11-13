@@ -97,7 +97,6 @@ trait HandlesCodes
         return $this->getAuthenticationStrategy()->disable($code);
     }
 
-
     /**
      * Get the cache key for the current MFA instance.
      */
