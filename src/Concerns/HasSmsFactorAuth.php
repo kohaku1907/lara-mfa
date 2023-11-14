@@ -23,7 +23,7 @@ trait HasSmsFactorAuth
         if ($this->smsFactor->exists === false) {
             $this->smsFactor->save();
         }
-        
+
         return $this->smsFactor;
     }
 }
