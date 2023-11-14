@@ -24,7 +24,7 @@ trait HasTotpFactorAuth
             $this->totpFactor->save();
         }
 
-        if($this->totpFactor->secret === null) {
+        if ($this->totpFactor->secret === null) {
             $this->totpFactor->secret = MFAuth::generateRandomSecret();
             $this->totpFactor->save();
         }

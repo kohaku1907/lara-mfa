@@ -26,9 +26,11 @@ class TotpAuthentication extends BaseAuthentication implements AuthenticationStr
             $generatedCode = $this->generateCodeFromTime($time);
             if ($generatedCode == $code) {
                 $this->setCodeAsUsed($code);
+
                 return true;
             }
         }
+
         return false;
     }
 
