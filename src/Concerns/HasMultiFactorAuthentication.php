@@ -24,7 +24,7 @@ trait HasMultiFactorAuthentication
         return $this->morphMany(related: MFAuth::class, name: 'authenticatable');
     }
 
-    public function getAvailableFactors(): array
+    public static function getAvailableFactors(): array
     {
         $availableFactors = [];
 
@@ -36,7 +36,7 @@ trait HasMultiFactorAuthentication
             $availableFactors[] = Channel::Email->value;
         }
 
-        if (in_array(HasTotpAuth::class, class_uses(static::class))) {
+        if (in_array(HasTotpFactorAuth::class, class_uses(static::class))) {
             $availableFactors[] = Channel::Totp->value;
         }
 

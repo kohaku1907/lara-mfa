@@ -31,6 +31,7 @@ abstract class BaseAuthentication
         if ($this->mfa->isEnabled() && $this->mfa->verifyCode($code)) {
             $this->mfa->update([
                 'enabled_at' => null,
+                'secret' => null,
             ]);
 
             return true;

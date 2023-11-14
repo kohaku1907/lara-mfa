@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 
-trait HasTotpAuth
+trait HasTotpFactorAuth
 {
     public function totpFactor(): MorphOne
     {
@@ -21,6 +21,11 @@ trait HasTotpAuth
     public function createTotpFactorAuth(): MFAuth
     {
         if ($this->totpFactor->exists === false) {
+            $this->totpFactor->save();
+        }
+
+        if($this->totpFactor->secret === null) {
+            $this->totpFactor->secret = MFAuth::generateRandomSecret();
             $this->totpFactor->save();
         }
 

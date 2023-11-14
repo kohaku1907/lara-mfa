@@ -6,7 +6,7 @@ interface MultiFactorAuthenticatable
 {
     public function registerMultiFactorAuthentication(): void;
 
-    public function getAvailableFactors(): array;
+    public static function getAvailableFactors(): array;
 
     public function hasMultiFactorEnabled(?string $channel): bool;
 

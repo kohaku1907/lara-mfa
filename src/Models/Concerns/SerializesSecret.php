@@ -31,7 +31,7 @@ trait SerializesSecret
             'digits' => 6,
         ], '', '&', PHP_QUERY_RFC3986);
 
-        return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$this->attributes['label']."?$query";
+        return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$label."?$query";
     }
 
     /**
@@ -39,7 +39,7 @@ trait SerializesSecret
      */
     public function toQr(): string
     {
-        [$size, $margin] = array_values(config('mfa.qr_code'));
+        [$size, $margin] = array_values(config('mfa.totp.qr_code'));
 
         return (
             new Writer(new ImageRenderer(new RendererStyle($size, $margin), new SvgImageBackEnd()))

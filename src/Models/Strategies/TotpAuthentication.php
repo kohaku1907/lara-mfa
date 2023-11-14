@@ -3,12 +3,15 @@
 namespace Kohaku1907\LaraMfa\Models\Strategies;
 
 use Illuminate\Support\Facades\Cache;
+use ParagonIE\ConstantTime\Base32;
 
 class TotpAuthentication extends BaseAuthentication implements AuthenticationStrategy
 {
     private $seconds = 30;
 
     private $digits = 6;
+
+    private $algorithm = 'sha1';
 
     public function verifyCode(string $code): bool
     {
@@ -21,13 +24,11 @@ class TotpAuthentication extends BaseAuthentication implements AuthenticationStr
         for ($i = 0; $i <= $periods; $i++) {
             $time = time() - ($i * $this->seconds);
             $generatedCode = $this->generateCodeFromTime($time);
-            if (hash_equals($generatedCode, $code)) {
+            if ($generatedCode == $code) {
                 $this->setCodeAsUsed($code);
-
                 return true;
             }
         }
-
         return false;
     }
 
@@ -41,12 +42,15 @@ class TotpAuthentication extends BaseAuthentication implements AuthenticationStr
         return $this->generateCodeFromTime();
     }
 
-    protected function generateCodeFromTime(int $at = time()): string
+    protected function generateCodeFromTime(int $at = null): string
     {
-        $secret = $this->mfa->secret;
-        $time = floor($at / $this->seconds); // TOTP time step is 30 seconds
-        $binaryTime = pack('N*', 0).pack('N*', $time); // Convert timestamp to binary
-        $hash = hash_hmac('sha1', $binaryTime, $secret, true); // Calculate HMAC-SHA1 hash
+        if ($at === null) {
+            $at = time();
+        }
+        $secret = Base32::decodeUpper($this->mfa->secret);
+        $timeSlice = (int) floor($at / $this->seconds); // TOTP time step is 30 seconds
+        $binaryTime = pack('N*', 0).pack('N*', $timeSlice); // Convert timestamp to binary
+        $hash = hash_hmac($this->algorithm, $binaryTime, $secret, true); // Calculate HMAC-SHA1 hash
         $offset = ord(substr($hash, -1)) & 0x0F; // Calculate offset
         $code = (
             (ord(substr($hash, $offset + 0)) & 0x7F) << 24 |

@@ -2,6 +2,7 @@
 
 namespace Kohaku1907\LaraMfa\Models\Concerns;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Kohaku1907\LaraMfa\Enums\Channel;
@@ -31,8 +32,10 @@ trait HandlesCodes
 
     /**
      * Generate a new code for the current authentication strategy.
+     * @param  bool  $renew
+     * @return string
      */
-    public function generateCode(): string
+    public function generateCode($renew = false): string
     {
         if ($this->channel === Channel::Totp) {
             return $this->getAuthenticationStrategy()->generateCode();
@@ -42,7 +45,7 @@ trait HandlesCodes
         $cacheKey = $this->getCacheKey();
         $cacheDuration = $this->getCacheDuration();
 
-        if (Cache::has($cacheKey)) {
+        if (!$renew && Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
         }
 
@@ -53,16 +56,49 @@ trait HandlesCodes
     }
 
     /**
-     * Send a code using the current authentication strategy.
-     */
-    public function sendCode(): void
-    {
-        if ($this->channel === Channel::Totp) {
-            return;
+         * Send a new code using the current authentication strategy.
+         * @return bool
+         */
+        public function sendCode(): bool
+        {
+            if ($this->channel === Channel::Totp) {
+                return false;
+            }
+
+            $resendInterval = config("mfa.{$this->channel->value}.resend_interval");
+            $resendLimitDuration = config("mfa.{$this->channel->value}.resend_limit_duration");
+            $resendLimit = config("mfa.{$this->channel->value}.resend_limit");
+            $lastSentKey = "mfa.{$this->channel->value}.last_sent";
+            $countSentKey = "mfa.{$this->channel->value}.sent_count";
+            $lastSent = Cache::get($lastSentKey);
+            $countSent = Cache::get($countSentKey, 0);
+
+            if($lastSent && now()->diffInSeconds(Carbon::createFromTimestamp($lastSent)) < $resendInterval) {
+                return false;
+            }
+
+            if($lastSent && now()->diffInMinutes(Carbon::createFromTimestamp($lastSent)) >= $resendLimitDuration) {
+                Cache::forget($lastSentKey);
+                Cache::forget("mfa.{$this->channel->value}.sent_count");
+            }
+
+            if (!$lastSent || $countSent < $resendLimit) {
+                Cache::put($lastSentKey, now()->getTimestamp(), $resendLimitDuration * 60);
+                $sentCount = Cache::get($countSentKey, 0);
+                $sentCount++;
+                Cache::put($countSentKey, $sentCount, $resendLimitDuration * 60);
+                $this->send();
+
+                return true;
+            }
+
+            return false;
         }
 
+    protected function send(): void {
         $notificationClass = Config::get("mfa.{$this->channel->value}.notification");
-        $this->authenticatable->notify(new $notificationClass($this->generateCode()));
+        $code = $this->generateCode(true);
+        $this->authenticatable->notify(new $notificationClass($code));
     }
 
     /**
