@@ -25,9 +25,6 @@ trait HasEmailFactorAuth
 
         }
 
-        $this->emailFactor->generateCode();
-        $this->emailFactor->sendCode();
-
         return $this->emailFactor;
     }
 }
