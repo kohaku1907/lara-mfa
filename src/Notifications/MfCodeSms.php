@@ -4,10 +4,11 @@ namespace Kohaku1907\LaraMfa\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\VonageMessage;
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioSmsMessage;
 use Illuminate\Notifications\Notification;
 
-class MfCodeSms extends Notification implements ShouldQueue
+class MfCodeSms extends Notification
 {
     use Queueable;
 
@@ -18,12 +19,12 @@ class MfCodeSms extends Notification implements ShouldQueue
 
     public function via(mixed $notifiable): array
     {
-        return ['nexmo'];
+        return [TwilioChannel::class];
     }
 
-    public function toNexmo($notifiable): VonageMessage
+    public function toTwilio($notifiable): TwilioSmsMessage
     {
-        return (new VonageMessage)
+        return (new TwilioSmsMessage())
             ->content('Your code is: '.$this->code);
     }
 }
