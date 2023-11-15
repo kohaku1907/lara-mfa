@@ -118,7 +118,7 @@ trait HandlesCodes
         return false;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return Cache::get($this->getCacheKey());
     }
