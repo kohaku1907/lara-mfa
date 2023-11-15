@@ -3,8 +3,8 @@
 namespace Kohaku1907\LaraMfa\Concerns;
 
 use Closure;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
@@ -44,7 +44,7 @@ trait HasMultiFactorAuthentication
         return $availableFactors;
     }
 
-    public function hasMultiFactorEnabled(?Channel $channel = null): Collection|bool
+    public function hasMultiFactorEnabled(Channel $channel = null): Collection|bool
     {
         if ($channel === null) {
             // return enabled channels
@@ -60,14 +60,17 @@ trait HasMultiFactorAuthentication
         return $enabledAt !== null;
     }
 
-    public function hasMultiFactorVerified(?Channel $channel = null): Collection|bool
+    public function hasMultiFactorVerified(Channel $channel = null): Collection|bool
     {
         if ($channel === null) {
             $verifiedChannels = [];
             foreach (self::getAvailableFactors() as $channel) {
                 $isVerified = $this->hasMultiFactorVerified($channel);
-                if ($isVerified) $verifiedChannels[] = $channel;
+                if ($isVerified) {
+                    $verifiedChannels[] = $channel;
+                }
             }
+
             return collect($verifiedChannels);
         }
 
