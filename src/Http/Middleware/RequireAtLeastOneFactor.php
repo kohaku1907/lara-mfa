@@ -1,10 +1,11 @@
 <?php
+
 namespace Kohaku1907\LaraMfa\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Contracts\MultiFactorAuthenticatable;
+use Kohaku1907\LaraMfa\Enums\Channel;
 
 class RequireAtLeastOneFactor
 {
