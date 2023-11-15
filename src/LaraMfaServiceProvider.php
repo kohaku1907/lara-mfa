@@ -20,6 +20,7 @@ class LaraMfaServiceProvider extends PackageServiceProvider
     {
         $router = $this->app->make(Router::class);
         $router->aliasMiddleware('mfa', Http\Middleware\VerifyMultiFactor::class);
-        $router->aliasMiddleware('mfa.force', Http\Middleware\ForceVerifyMultiFactor::class);
+        $router->aliasMiddleware('mfa.enforce', Http\Middleware\EnforceMultiFactor::class);
+        $router->aliasMiddleware('mfa.require_one', Http\Middleware\RequireAtLeastOneFactor::class);
     }
 }

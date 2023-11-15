@@ -7,22 +7,19 @@ use Illuminate\Http\Request;
 use Kohaku1907\LaraMfa\Contracts\MultiFactorAuthenticatable;
 use Kohaku1907\LaraMfa\Enums\Channel;
 
-class ForceVerifyMultiFactor
+class EnforceMultiFactor
 {
     public function handle(Request $request, Closure $next, ...$channels)
     {
         $user = $request->user();
 
         if (! $user instanceof MultiFactorAuthenticatable) {
-            return $next($request);
+            throw new \Exception('User is not multi-factor authenticatable');
         }
 
         foreach ($channels as $channel) {
-            if (! in_array($channel, Channel::cases())) {
-                throw new \Exception('Invalid MFA channel: '.$channel);
-            }
-
-            if (! $user->hasMultiFactorEnabled($channel) || ! $this->recentlyConfirmed($request, $channel)) {
+            $channel = Channel::from($channel);
+            if (! $user->hasMultiFactorEnabled($channel) || ! $this->recentlyConfirmed($request, $channel->value)) {
                 return $user->multiFactorAuthRedirect();
             }
         }
@@ -30,7 +27,7 @@ class ForceVerifyMultiFactor
         return $next($request);
     }
 
-    protected function recentlyConfirmed(Request $request, $channel): bool
+    protected function recentlyConfirmed(Request $request,string $channel): bool
     {
         return $request->session()->get("mfa.{$channel}.expired_at") >= now()->getTimestamp();
     }

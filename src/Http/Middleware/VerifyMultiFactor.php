@@ -14,13 +14,12 @@ class VerifyMultiFactor
         $user = $request->user();
 
         if (! $user instanceof MultiFactorAuthenticatable) {
-            return $next($request);
+            throw new \Exception('User is not multi-factor authenticatable');
         }
 
         $valid = true;
         foreach (Channel::cases() as $channel) {
-            $channel = $channel->value;
-            if ($user->hasMultiFactorEnabled($channel) && ! $this->recentlyConfirmed($request, $channel)) {
+            if ($user->hasMultiFactorEnabled($channel) && ! $this->recentlyConfirmed($request, $channel->value)) {
                 $valid = false;
                 break;
             }

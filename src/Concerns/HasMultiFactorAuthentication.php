@@ -43,17 +43,17 @@ trait HasMultiFactorAuthentication
         return $availableFactors;
     }
 
-    public function hasMultiFactorEnabled(string $channel = null): bool
+    public function hasMultiFactorEnabled(?Channel $channel = null): bool
     {
         if ($channel === null) {
             return $this->multiFactors()->whereNotNull('enabled_at')->exists();
         }
 
-        if (! in_array($channel, $this->getAvailableFactors())) {
+        if (! in_array($channel->value, self::getAvailableFactors())) {
             return false;
         }
 
-        $enabledAt = $this->multiFactors()->where('channel', $channel)->value('enabled_at');
+        $enabledAt = $this->multiFactors()->where('channel', $channel->value)->value('enabled_at');
 
         return $enabledAt !== null;
     }
