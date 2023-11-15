@@ -43,7 +43,7 @@ trait HasMultiFactorAuthentication
         return $availableFactors;
     }
 
-    public function hasMultiFactorEnabled(?Channel $channel = null): bool
+    public function hasMultiFactorEnabled(Channel $channel = null): bool
     {
         if ($channel === null) {
             return $this->multiFactors()->whereNotNull('enabled_at')->exists();

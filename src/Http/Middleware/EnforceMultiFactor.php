@@ -27,7 +27,7 @@ class EnforceMultiFactor
         return $next($request);
     }
 
-    protected function recentlyConfirmed(Request $request,string $channel): bool
+    protected function recentlyConfirmed(Request $request, string $channel): bool
     {
         return $request->session()->get("mfa.{$channel}.expired_at") >= now()->getTimestamp();
     }
