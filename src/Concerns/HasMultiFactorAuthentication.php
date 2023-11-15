@@ -3,6 +3,7 @@
 namespace Kohaku1907\LaraMfa\Concerns;
 
 use Closure;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Route;
 use Kohaku1907\LaraMfa\Enums\Channel;
@@ -29,33 +30,52 @@ trait HasMultiFactorAuthentication
         $availableFactors = [];
 
         if (in_array(HasSmsFactorAuth::class, class_uses(static::class))) {
-            $availableFactors[] = Channel::Sms->value;
+            $availableFactors[] = Channel::Sms;
         }
 
         if (in_array(HasEmailFactorAuth::class, class_uses(static::class))) {
-            $availableFactors[] = Channel::Email->value;
+            $availableFactors[] = Channel::Email;
         }
 
         if (in_array(HasTotpFactorAuth::class, class_uses(static::class))) {
-            $availableFactors[] = Channel::Totp->value;
+            $availableFactors[] = Channel::Totp;
         }
 
         return $availableFactors;
     }
 
-    public function hasMultiFactorEnabled(Channel $channel = null): bool
+    public function hasMultiFactorEnabled(?Channel $channel = null): Collection|bool
     {
         if ($channel === null) {
-            return $this->multiFactors()->whereNotNull('enabled_at')->exists();
+            // return enabled channels
+            return $this->multiFactors()->whereNotNull('enabled_at')->pluck('channel');
         }
 
-        if (! in_array($channel->value, self::getAvailableFactors())) {
+        if (! in_array($channel, self::getAvailableFactors())) {
             return false;
         }
 
         $enabledAt = $this->multiFactors()->where('channel', $channel->value)->value('enabled_at');
 
         return $enabledAt !== null;
+    }
+
+    public function hasMultiFactorVerified(?Channel $channel = null): Collection|bool
+    {
+        if ($channel === null) {
+            $verifiedChannels = [];
+            foreach (self::getAvailableFactors() as $channel) {
+                $isVerified = $this->hasMultiFactorVerified($channel);
+                if ($isVerified) $verifiedChannels[] = $channel;
+            }
+            return collect($verifiedChannels);
+        }
+
+        if (! in_array($channel, self::getAvailableFactors())) {
+            return false;
+        }
+
+        return $this->multiFactors()->where('channel', $channel->value)->first()?->isVerified();
     }
 
     public function registerMultiFactorAuthentication(): void

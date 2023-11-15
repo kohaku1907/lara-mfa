@@ -15,7 +15,7 @@ abstract class BaseAuthentication
 
     public function enable($code): bool
     {
-        if ($this->mfa->isDisabled() && $this->mfa->verifyCode($code)) {
+        if ($this->mfa->isDisabled() && $this->mfa->verify($code)) {
             $this->mfa->update([
                 'enabled_at' => now(),
             ]);
@@ -28,7 +28,7 @@ abstract class BaseAuthentication
 
     public function disable($code): bool
     {
-        if ($this->mfa->isEnabled() && $this->mfa->verifyCode($code)) {
+        if ($this->mfa->isEnabled() && $this->mfa->verify($code)) {
             $this->mfa->update([
                 'enabled_at' => null,
                 'secret' => null,

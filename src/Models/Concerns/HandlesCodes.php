@@ -104,7 +104,7 @@ trait HandlesCodes
     /**
      * Verify the given code against the current authentication strategy.
      */
-    public function verifyCode(string $code): bool
+    public function verify(string $code): bool
     {
         if ($this->getAuthenticationStrategy()->verifyCode($code)) {
             $expireTime = Config::get("mfa.{$this->channel->value}.expire_time");
@@ -131,6 +131,11 @@ trait HandlesCodes
     public function disable(string $code): bool
     {
         return $this->getAuthenticationStrategy()->disable($code);
+    }
+
+    public function isVerified(): bool
+    {
+        return session()->get("mfa.{$this->channel->value}.expired_at") >= now()->getTimestamp();
     }
 
     /**
