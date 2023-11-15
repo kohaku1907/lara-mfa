@@ -3,10 +3,9 @@
 namespace Kohaku1907\LaraMfa\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Notification;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
-use Illuminate\Notifications\Notification;
 
 class MfCodeSms extends Notification
 {
