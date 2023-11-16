@@ -10,8 +10,6 @@ trait HasTotpFactorAuth
 {
     /**
      * Retrieves the TOTP factor for the authenticatable model.
-     *
-     * @return MorphOne
      */
     public function totpFactor(): MorphOne
     {

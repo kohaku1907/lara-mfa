@@ -10,8 +10,6 @@ trait HasSmsFactorAuth
 {
     /**
      * Retrieves the SMS factor for the authenticatable model.
-     *
-     * @return MorphOne
      */
     public function smsFactor(): MorphOne
     {

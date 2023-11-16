@@ -10,8 +10,6 @@ trait HasEmailFactorAuth
 {
     /**
      * Retrieve the email factor authentication for the authenticatable model.
-     *
-     * @return MorphOne
      */
     public function emailFactor(): MorphOne
     {
