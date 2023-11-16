@@ -7,12 +7,6 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 
-use function array_values;
-use function chunk_split;
-use function config;
-use function http_build_query;
-use function rawurlencode;
-use function trim;
 
 trait SerializesSecret
 {

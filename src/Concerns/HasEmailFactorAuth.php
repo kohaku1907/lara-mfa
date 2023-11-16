@@ -8,6 +8,11 @@ use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 
 trait HasEmailFactorAuth
 {
+    /**
+     * Retrieve the email factor authentication for the authenticatable model.
+     *
+     * @return MorphOne
+     */
     public function emailFactor(): MorphOne
     {
         return $this->morphOne(MFAuth::class, 'authenticatable')->where('channel', Channel::Email)
@@ -18,6 +23,11 @@ trait HasEmailFactorAuth
             ]);
     }
 
+    /**
+     * Creates an email factor authentication.
+     *
+     * @return MFAuth The created email factor authentication.
+     */
     public function createEmailFactorAuth(): MFAuth
     {
         if ($this->emailFactor->exists === false) {
