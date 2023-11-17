@@ -10,6 +10,8 @@ use Kohaku1907\LaraMfa\Models\Strategies\AuthenticationStrategy;
 use Kohaku1907\LaraMfa\Models\Strategies\EmailAuthentication;
 use Kohaku1907\LaraMfa\Models\Strategies\SmsAuthentication;
 use Kohaku1907\LaraMfa\Models\Strategies\TotpAuthentication;
+use Kohaku1907\LaraMfa\Exceptions\ResendCodeLimitExceededException;
+use Kohaku1907\LaraMfa\Exceptions\ResendCodeIntervalNotElapsedException;
 
 trait HandlesCodes
 {
@@ -57,11 +59,13 @@ trait HandlesCodes
 
     /**
      * Send a new code using the current authentication strategy.
+     * @throws ResendCodeIntervalNotElapsedException
+     * @throws ResendCodeLimitExceededException
      */
-    public function sendCode(): bool
+    public function sendCode(): void
     {
         if ($this->channel === Channel::Totp) {
-            return false;
+            return;
         }
 
         $resendInterval = config("mfa.{$this->channel->value}.resend_interval");
@@ -73,7 +77,7 @@ trait HandlesCodes
         $countSent = Cache::get($countSentKey, 0);
 
         if ($lastSent && now()->diffInSeconds(Carbon::createFromTimestamp($lastSent)) < $resendInterval) {
-            return false;
+            throw new ResendCodeIntervalNotElapsedException();
         }
 
         if ($lastSent && now()->diffInMinutes(Carbon::createFromTimestamp($lastSent)) >= $resendLimitDuration) {
@@ -81,17 +85,15 @@ trait HandlesCodes
             Cache::forget("mfa.{$this->channel->value}.sent_count");
         }
 
-        if (! $lastSent || $countSent < $resendLimit) {
-            Cache::put($lastSentKey, now()->getTimestamp(), $resendLimitDuration * 60);
-            $sentCount = Cache::get($countSentKey, 0);
-            $sentCount++;
-            Cache::put($countSentKey, $sentCount, $resendLimitDuration * 60);
-            $this->send();
-
-            return true;
+        if ($countSent >= $resendLimit) {
+            throw new ResendCodeLimitExceededException();
         }
 
-        return false;
+        Cache::put($lastSentKey, now()->getTimestamp(), $resendLimitDuration * 60);
+        $sentCount = Cache::get($countSentKey, 0);
+        $sentCount++;
+        Cache::put($countSentKey, $sentCount, $resendLimitDuration * 60);
+        $this->send();
     }
 
     protected function send(): void
