@@ -34,8 +34,8 @@ class Totp implements ValidationRule
     {
         if(!is_string($value)
             || !$this->user instanceof MultiFactorAuthenticatable
-            || !$this->user->createTotpFactorAuth()->validate($value)) {
-                $fail(trans('lara-mfa::validation.totp'));
+            || !$this->user->createTotpFactorAuth()->verify($value)) {
+                $fail(trans('lara-mfa::validation.totp_code'));
         }
     }
 }
