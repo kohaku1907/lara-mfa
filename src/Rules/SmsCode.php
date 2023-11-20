@@ -34,7 +34,7 @@ class SmsCode implements ValidationRule
     {
         if(!is_string($value)
             || !$this->user instanceof MultiFactorAuthenticatable
-            || !$this->user->createSmsFactorAuth()->validate($value)) {
+            || !$this->user->createSmsFactorAuth()->verify($value)) {
                 $fail(trans('lara-mfa::validation.sms_code'));
         }
     }

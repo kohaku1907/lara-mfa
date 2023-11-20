@@ -4,7 +4,9 @@
     "keywords": [
         "kohaku1907",
         "laravel",
-        "lara-mfa"
+        "lara-mfa",
+        "multi-factor-authentication",
+        "mfa"
     ],
     "homepage": "https://github.com/kohaku1907/lara-mfa",
     "license": "MIT",
@@ -16,7 +18,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "bacon/bacon-qr-code": "^2.0",
         "illuminate/contracts": "^10.0",
         "paragonie/constant_time_encoding": "^2.6",

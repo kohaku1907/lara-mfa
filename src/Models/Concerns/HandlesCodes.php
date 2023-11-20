@@ -124,11 +124,6 @@ trait HandlesCodes
         return false;
     }
 
-    public function validate(string $code): bool
-    {
-        return $this->getAuthenticationStrategy()->verifyCode($code);
-    }
-
     public function getCode(): ?string
     {
         return Cache::get($this->getCacheKey());
