@@ -9,7 +9,7 @@ use Kohaku1907\LaraMfa\Enums\Channel;
 
 class RequireAtLeastOneFactor
 {
-    public function handle(Request $request, Closure $next, ...$requiredChannels)
+    public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
 
@@ -17,15 +17,14 @@ class RequireAtLeastOneFactor
             throw new \Exception('User is not multi-factor authenticatable');
         }
 
-        foreach ($requiredChannels as $channel) {
-            $channel = Channel::from($channel);
-            if ($channel && $user->hasMultiFactorEnabled($channel) && $this->recentlyConfirmed($request, $channel->value)) {
+        foreach (Channel::cases() as $channel) {
+            if ($user->hasMultiFactorEnabled($channel) && $this->recentlyConfirmed($request, $channel->value)) {
                 return $next($request);
             }
         }
 
         // If the user hasn't enabled and verified at least one of the required channels, redirect them to the MFA setup page
-        return $user->multiFactorAuthRedirect();
+        return $user->multiFactorAuthRedirect($user::MIDDLEWARE_REQUIRE_AT_LEAST_ONE_FACTOR);
     }
 
     protected function recentlyConfirmed(Request $request, string $channel): bool
