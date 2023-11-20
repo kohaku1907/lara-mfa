@@ -103,8 +103,12 @@ trait HandlesCodes
         $this->authenticatable->notify(new $notificationClass($code));
     }
 
+
     /**
-     * Verify the given code against the current authentication strategy.
+     * Confirm the provided code and  save verified state to the session.
+     *
+     * @param string $code The code to be confirmed.
+     * @return bool Returns true if the code is confirmed, false otherwise.
      */
     public function verify(string $code): bool
     {
@@ -118,6 +122,11 @@ trait HandlesCodes
         }
 
         return false;
+    }
+
+    public function validate(string $code): bool
+    {
+        return $this->getAuthenticationStrategy()->verifyCode($code);
     }
 
     public function getCode(): ?string
