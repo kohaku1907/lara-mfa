@@ -17,7 +17,7 @@ class RequireAtLeastOneFactor
             throw new \Exception('User is not multi-factor authenticatable');
         }
 
-        if(empty($user->hasMultiFactorEnabled())) return $next($request);
+        if($user->hasMultiFactorEnabled()->isEmpty()) return $next($request);
         
         foreach (Channel::cases() as $channel) {
             if ($user->hasMultiFactorEnabled($channel) && $this->recentlyConfirmed($request, $channel->value)) {
