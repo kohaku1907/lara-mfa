@@ -9,7 +9,7 @@ use Kohaku1907\LaraMfa\Enums\Channel;
 
 class RequireAtLeastOneFactor
 {
-    public function handle(Request $request, Closure $next, ...$requiredChannels)
+    public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
 
@@ -17,9 +17,8 @@ class RequireAtLeastOneFactor
             throw new \Exception('User is not multi-factor authenticatable');
         }
 
-        foreach ($requiredChannels as $channel) {
-            $channel = Channel::from($channel);
-            if ($channel && $user->hasMultiFactorEnabled($channel) && $this->recentlyConfirmed($request, $channel->value)) {
+        foreach (Channel::cases() as $channel) {
+            if ($user->hasMultiFactorEnabled($channel) && $this->recentlyConfirmed($request, $channel->value)) {
                 return $next($request);
             }
         }
