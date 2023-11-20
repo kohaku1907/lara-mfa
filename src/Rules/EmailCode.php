@@ -34,7 +34,7 @@ class EmailCode implements ValidationRule
     {
         if(!is_string($value)
             || !$this->user instanceof MultiFactorAuthenticatable
-            || !$this->user->createEmailFactorAuth()->verify($value)) {
+            || !$this->user->createEmailFactorAuth()->validate($value)) {
                 $fail(trans('lara-mfa::validation.email_code'));
         }
     }
