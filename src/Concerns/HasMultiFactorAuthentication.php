@@ -11,9 +11,17 @@ use Kohaku1907\LaraMfa\Models\MultiFactorAuthentication as MFAuth;
 
 trait HasMultiFactorAuthentication
 {
-    protected $redirectRoute;
+    const MIDDLEWARE_ENFORCE_MULTI_FACTOR = 'enforceMultiFactor';
+    const MIDDLEWARE_REQUIRE_AT_LEAST_ONE_FACTOR = 'requireAtLeastOneFactor';
+    const MIDDLEWARE_VERIFY_MULTI_FACTOR = 'verifyMultiFactor';
 
-    protected $beforeRedirect;
+    protected $enforceMultiFactorRedirectRoute;
+    protected $requireAtLeastOneFactorRedirectRoute;
+    protected $verifyMultiFactorRedirectRoute;
+
+    protected $enforceMultiFactorBeforeRedirect;
+    protected $requireAtLeastOneFactorBeforeRedirect;
+    protected $verifyMultiFactorBeforeRedirect;
 
     public function initializeHasMultiFactorAuthentication()
     {
@@ -105,33 +113,61 @@ trait HasMultiFactorAuthentication
     /**
      * Configure the redirect route and optional before redirect closure.
      *
+     * @param string $middleware The middleware to configure.
      * @param string $route The route to redirect to.
      * @param Closure|null $beforeRedirect An optional closure to execute before the redirect.
      * @return void
      */
-    public function configureRedirectRoute(string $route, Closure $beforeRedirect = null): void
+    public function configureRedirectRoute(string $middleware, string $route, Closure $beforeRedirect = null): void
     {
-        $this->redirectRoute = $route;
-        $this->beforeRedirect = $beforeRedirect;
+        switch ($middleware) {
+            case self::MIDDLEWARE_ENFORCE_MULTI_FACTOR:
+                $this->enforceMultiFactorRedirectRoute = $route;
+                $this->enforceMultiFactorBeforeRedirect = $beforeRedirect;
+                break;
+            case self::MIDDLEWARE_REQUIRE_AT_LEAST_ONE_FACTOR:
+                $this->requireAtLeastOneFactorRedirectRoute = $route;
+                $this->requireAtLeastOneFactorBeforeRedirect = $beforeRedirect;
+                break;
+            case self::MIDDLEWARE_VERIFY_MULTI_FACTOR:
+                $this->verifyMultiFactorRedirectRoute = $route;
+                $this->verifyMultiFactorBeforeRedirect = $beforeRedirect;
+                break;
+        }
     }
 
     /**
      * Redirects the user after multi-factor authentication.
      *
+     * @param string $middleware The middleware to use.
      * @throws Exception If the redirect route is invalid or missing.
      * @return mixed The redirect response.
      */
-    public function multiFactorAuthRedirect(): mixed
+    public function multiFactorAuthRedirect(string $middleware): mixed
     {
-        if ($this->beforeRedirect) {
-            call_user_func($this->beforeRedirect);
+        $beforeRedirect = match ($middleware) {
+            self::MIDDLEWARE_ENFORCE_MULTI_FACTOR => $this->enforceMultiFactorBeforeRedirect,
+            self::MIDDLEWARE_REQUIRE_AT_LEAST_ONE_FACTOR => $this->requireAtLeastOneFactorBeforeRedirect,
+            self::MIDDLEWARE_VERIFY_MULTI_FACTOR => $this->verifyMultiFactorBeforeRedirect,
+            default => null,
+        };
+
+        if ($beforeRedirect) {
+            call_user_func($beforeRedirect);
         }
 
-        if ($this->redirectRoute) {
-            if (Route::has($this->redirectRoute)) {
-                return redirect()->route($this->redirectRoute);
+        $redirectRoute = match ($middleware) {
+            self::MIDDLEWARE_ENFORCE_MULTI_FACTOR => $this->enforceMultiFactorRedirectRoute,
+            self::MIDDLEWARE_REQUIRE_AT_LEAST_ONE_FACTOR => $this->requireAtLeastOneFactorRedirectRoute,
+            self::MIDDLEWARE_VERIFY_MULTI_FACTOR => $this->verifyMultiFactorRedirectRoute,
+            default => null,
+        };
+
+        if ($redirectRoute) {
+            if (Route::has($redirectRoute)) {
+                return redirect()->route($redirectRoute);
             } else {
-                return redirect($this->redirectRoute);
+                return redirect($redirectRoute);
             }
         } else {
             abort(401);

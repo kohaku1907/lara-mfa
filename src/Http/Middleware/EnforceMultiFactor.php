@@ -20,7 +20,7 @@ class EnforceMultiFactor
         foreach ($channels as $channel) {
             $channel = Channel::from($channel);
             if (! $user->hasMultiFactorEnabled($channel) || ! $this->recentlyConfirmed($request, $channel->value)) {
-                return $user->multiFactorAuthRedirect();
+                return $user->multiFactorAuthRedirect($user::MIDDLEWARE_ENFORCE_MULTI_FACTOR);
             }
         }
 

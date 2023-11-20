@@ -25,7 +25,7 @@ class RequireAtLeastOneFactor
         }
 
         // If the user hasn't enabled and verified at least one of the required channels, redirect them to the MFA setup page
-        return $user->multiFactorAuthRedirect();
+        return $user->multiFactorAuthRedirect($user::MIDDLEWARE_REQUIRE_AT_LEAST_ONE_FACTOR);
     }
 
     protected function recentlyConfirmed(Request $request, string $channel): bool

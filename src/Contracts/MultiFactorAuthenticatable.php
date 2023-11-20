@@ -15,5 +15,5 @@ interface MultiFactorAuthenticatable
 
     public function hasMultiFactorVerified(Channel $channel = null): Collection|bool;
 
-    public function multiFactorAuthRedirect(): mixed;
+    public function multiFactorAuthRedirect(string $middleware): mixed;
 }

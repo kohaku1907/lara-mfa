@@ -26,7 +26,7 @@ class VerifyMultiFactor
         }
 
         if (! $valid) {
-            return $user->multiFactorAuthRedirect();
+            return $user->multiFactorAuthRedirect($user::MIDDLEWARE_VERIFY_MULTI_FACTOR);
         }
 
         return $next($request);
