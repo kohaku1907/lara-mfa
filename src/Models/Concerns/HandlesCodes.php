@@ -5,6 +5,7 @@ namespace Kohaku1907\LaraMfa\Models\Concerns;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Notification;
 use Kohaku1907\LaraMfa\Enums\Channel;
 use Kohaku1907\LaraMfa\Models\Strategies\AuthenticationStrategy;
 use Kohaku1907\LaraMfa\Models\Strategies\EmailAuthentication;
@@ -12,6 +13,7 @@ use Kohaku1907\LaraMfa\Models\Strategies\SmsAuthentication;
 use Kohaku1907\LaraMfa\Models\Strategies\TotpAuthentication;
 use Kohaku1907\LaraMfa\Exceptions\ResendCodeLimitExceededException;
 use Kohaku1907\LaraMfa\Exceptions\ResendCodeIntervalNotElapsedException;
+use Kohaku1907\LaraMfa\Notifications\DefaultAuthNotification;
 
 trait HandlesCodes
 {
@@ -62,7 +64,7 @@ trait HandlesCodes
      * @throws ResendCodeIntervalNotElapsedException
      * @throws ResendCodeLimitExceededException
      */
-    public function sendCode(): void
+    public function sendCode(?string $to = null ): void
     {
         if ($this->channel === Channel::Totp) {
             return;
@@ -93,14 +95,45 @@ trait HandlesCodes
         $sentCount = Cache::get($countSentKey, 0);
         $sentCount++;
         Cache::put($countSentKey, $sentCount, $resendLimitDuration * 60);
-        $this->send();
+        $this->send($to);
     }
 
-    protected function send(): void
+    protected function send(?string $to = null): void
+    {
+        $code = $this->generateCode(true);
+        $notification = $this->notification($code);
+        if($to) {
+            $channels = Config::get("mfa.{$this->channel->value}.channels");
+            Notification::route($channels[0], $to)->notify($notification);
+            Cache::put("mfa.{$this->channel->value}.to", $to, $this->getCacheDuration());
+        } else {
+            $this->authenticatable->notify($notification);
+            Cache::forget("mfa.{$this->channel->value}.to");
+        }
+    }
+
+    /**
+     * Set the notification to the user.
+     *
+     * @param string $token
+     *
+     * @return \Illuminate\Notifications\Notification
+     */
+    protected function notification($token)
     {
         $notificationClass = Config::get("mfa.{$this->channel->value}.notification");
-        $code = $this->generateCode(true);
-        $this->authenticatable->notify(new $notificationClass($code));
+        $channels = Config::get("mfa.{$this->channel->value}.channels");
+        if (isset($notificationClass)) {
+            return new $notificationClass(
+                $token,
+                $channels,
+            );
+        }
+
+        return new DefaultAuthNotification(
+            $token,
+            $channels
+        );
     }
 
 
@@ -124,13 +157,23 @@ trait HandlesCodes
         return false;
     }
 
+    public function verifyRecipient(string $recipient): bool
+    {
+        $to = Cache::get("mfa.{$this->channel->value}.to");
+        return $to === $recipient;
+    }
+
     public function getCode(): ?string
     {
         return Cache::get($this->getCacheKey());
     }
 
-    public function enable(string $code): bool
+    public function enable(string $code, ?string $to = null): bool
     {
+        if($to && !$this->verifyRecipient($to)) {
+            return false;
+        }
+
         return $this->getAuthenticationStrategy()->enable($code);
     }
 
